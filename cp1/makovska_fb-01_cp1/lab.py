@@ -64,8 +64,16 @@ def frequency_of_bigrams(txt, alfavit, cross = True):
         for key in dictionary.keys():
             freq[key] = dictionary[key]/(len(txt)/2)
             freq[key] = round(freq[key], 6)
-
     return freq
+
+def entropy(dictionary, n):
+    entropies = []
+    for k in dictionary.keys():
+        if dictionary[k] != 0:
+            e = abs(float(dictionary[k]) * math.log2(dictionary[k])/n)
+            entropies.append(e)
+    entropy = sum(entropies)
+    return entropy
 
 filter_txt('text.txt', True)
 file = open('filtered.txt')
@@ -73,9 +81,20 @@ text = file.read()
 file.close()
 
 print('----------------------Обрахунки для тексту з пробілами-----------------------\n\n')
-print('Частота букв:\n', frequency_of_letters(text, alfavit_sp))
-print('\nЧастота біграм H1:\n', frequency_of_bigrams(text, alfavit_sp, True))
-print('\nЧастота біграм H2:\n', frequency_of_bigrams(text, alfavit_sp, False))
+f = frequency_of_letters(text, alfavit_sp)
+print('Частота букв:\n', f)
+e = entropy(f, 1)
+print('\nЕнтропія:\n', e)
+
+f1 = frequency_of_bigrams(text, alfavit_sp, True)
+print('\nЧастота біграм H1:\n', f1)
+e = entropy(f1, 2)
+print('\nЕнтропія:\n', e)
+
+f2 = frequency_of_bigrams(text, alfavit_sp, False)
+print('\nЧастота біграм H2:\n', f2)
+e = entropy(f2, 2)
+print('\nЕнтропія:\n', e)
 
 print('\n\n----------------------Обрахунки для тексту без пробілів-----------------------\n\n')
 
@@ -84,6 +103,18 @@ file = open('filtered.txt')
 text_no_spaces = file.read()
 file.close()
 
-print('Частота букв:\n', frequency_of_letters(text_no_spaces, alfavit))
-print('\nЧастота біграм H1:\n', frequency_of_bigrams(text_no_spaces, alfavit, True))
-print('\nЧастота біграм H2:\n', frequency_of_bigrams(text_no_spaces, alfavit, False))
+f = frequency_of_letters(text_no_spaces, alfavit)
+print('Частота букв:\n', f)
+e = entropy(f, 1)
+print('\nЕнтропія:\n', e)
+
+f1 = frequency_of_bigrams(text_no_spaces, alfavit, True)
+print('\nЧастота біграм H1:\n', f1)
+e = entropy(f1, 2)
+print('\nЕнтропія:\n', e)
+
+f2 = frequency_of_bigrams(text_no_spaces, alfavit, False)
+print('\nЧастота біграм H2:\n', f2)
+e = entropy(f2, 2)
+print('\nЕнтропія:\n', e)
+
