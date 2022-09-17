@@ -85,16 +85,19 @@ f = frequency_of_letters(text, alfavit_sp)
 print('Частота букв:\n', f)
 e = entropy(f, 1)
 print('\nЕнтропія:\n', e)
+print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
 f1 = frequency_of_bigrams(text, alfavit_sp, True)
 print('\nЧастота біграм H1:\n', f1)
 e = entropy(f1, 2)
 print('\nЕнтропія:\n', e)
+print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
 f2 = frequency_of_bigrams(text, alfavit_sp, False)
 print('\nЧастота біграм H2:\n', f2)
 e = entropy(f2, 2)
 print('\nЕнтропія:\n', e)
+print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
 print('\n\n----------------------Обрахунки для тексту без пробілів-----------------------\n\n')
 
@@ -107,14 +110,17 @@ f = frequency_of_letters(text_no_spaces, alfavit)
 print('Частота букв:\n', f)
 e = entropy(f, 1)
 print('\nЕнтропія:\n', e)
+print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
 f1 = frequency_of_bigrams(text_no_spaces, alfavit, True)
 print('\nЧастота біграм H1:\n', f1)
 e = entropy(f1, 2)
 print('\nЕнтропія:\n', e)
+print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
 f2 = frequency_of_bigrams(text_no_spaces, alfavit, False)
 print('\nЧастота біграм H2:\n', f2)
 e = entropy(f2, 2)
 print('\nЕнтропія:\n', e)
+print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
