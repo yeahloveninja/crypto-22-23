@@ -1,4 +1,7 @@
 import re
+import math
+import pandas as pd
+import numpy as np
 
 alfavit = 'абвгдеёэжзиыйклмнопрстуфхцчшщъьюя' # алфавіт
 alfavit_sp = 'абвгдеёэжзиыйклмнопрстуфхцчшщъьюя ' # алфавіт + пробіл
@@ -81,21 +84,21 @@ text = file.read()
 file.close()
 
 print('----------------------Обрахунки для тексту з пробілами-----------------------\n\n')
-f = frequency_of_letters(text, alfavit_sp)
-print('Частота букв:\n', f)
-e = entropy(f, 1)
+f_1 = frequency_of_letters(text, alfavit_sp)
+print('Частота букв:\n', f_1)
+e = entropy(f_1, 1)
 print('\nЕнтропія:\n', e)
 print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
-f1 = frequency_of_bigrams(text, alfavit_sp, True)
-print('\nЧастота біграм H1:\n', f1)
-e = entropy(f1, 2)
+f1_1 = frequency_of_bigrams(text, alfavit_sp, True)
+print('\nЧастота біграм H1:\n', f1_1)
+e = entropy(f1_1, 2)
 print('\nЕнтропія:\n', e)
 print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
-f2 = frequency_of_bigrams(text, alfavit_sp, False)
-print('\nЧастота біграм H2:\n', f2)
-e = entropy(f2, 2)
+f2_1 = frequency_of_bigrams(text, alfavit_sp, False)
+print('\nЧастота біграм H2:\n', f2_1)
+e = entropy(f2_1, 2)
 print('\nЕнтропія:\n', e)
 print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
@@ -106,21 +109,111 @@ file = open('filtered.txt')
 text_no_spaces = file.read()
 file.close()
 
-f = frequency_of_letters(text_no_spaces, alfavit)
-print('Частота букв:\n', f)
-e = entropy(f, 1)
+f_2 = frequency_of_letters(text_no_spaces, alfavit)
+print('Частота букв:\n', f_2)
+e = entropy(f_2, 1)
 print('\nЕнтропія:\n', e)
 print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
-f1 = frequency_of_bigrams(text_no_spaces, alfavit, True)
-print('\nЧастота біграм H1:\n', f1)
-e = entropy(f1, 2)
+f1_2 = frequency_of_bigrams(text_no_spaces, alfavit, True)
+print('\nЧастота біграм H1:\n', f1_2)
+e = entropy(f1_2, 2)
 print('\nЕнтропія:\n', e)
 print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
-f2 = frequency_of_bigrams(text_no_spaces, alfavit, False)
-print('\nЧастота біграм H2:\n', f2)
-e = entropy(f2, 2)
+f2_2 = frequency_of_bigrams(text_no_spaces, alfavit, False)
+print('\nЧастота біграм H2:\n', f2_2)
+e = entropy(f2_2, 2)
 print('\nЕнтропія:\n', e)
 print('\nНадлишковість:\n', (1 - (e/math.log2(len(alfavit_sp)))))
 
+
+
+alfavit_sp = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'э', 'ж', 'з', 'и', 'ы', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ь', 'ю', 'я', ' ']
+alfavit = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'э', 'ж', 'з', 'и', 'ы', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ь', 'ю', 'я']
+data = pd.DataFrame(index = alfavit_sp, columns=alfavit_sp)
+
+bigr = []
+
+for l1 in alfavit_sp: # створили біграми
+    for l2 in alfavit_sp: 
+        bigr.append(l1+l2)
+ 
+n = 0
+for i in range(len(alfavit_sp)): # занесли біграми в таблицю 
+    data[alfavit_sp[i]] = bigr[n:len(alfavit_sp)+n]
+    n = len(alfavit_sp)+n
+data = data.T # транспонували
+
+
+for bigr_name in list(f1_1.keys()): 
+    i1,i2 = np.where(data == bigr_name) 
+    data.iloc[i1,i2] = f1_1[bigr_name] # на місце, де були написані біграми, вставляємо їх частоту
+    
+data.to_excel('bigr_fr_H1.xlsx') 
+
+
+data = pd.DataFrame(index = alfavit_sp, columns=alfavit_sp)
+
+bigr = []
+
+for l1 in alfavit_sp: 
+    for l2 in alfavit_sp: 
+        bigr.append(l1+l2)
+ 
+n = 0
+for i in range(len(alfavit_sp)): 
+    data[alfavit_sp[i]] = bigr[n:len(alfavit_sp)+n]
+    n = len(alfavit_sp)+n
+data = data.T 
+
+
+for bigr_name in list(f2_1.keys()): 
+    i1,i2 = np.where(data == bigr_name) 
+    data.iloc[i1,i2] = f2_1[bigr_name] 
+    
+data.to_excel('bigr_fr_H2.xlsx') 
+
+
+data = pd.DataFrame(index = alfavit, columns=alfavit)
+
+bigr = []
+
+for l1 in alfavit: 
+    for l2 in alfavit: 
+        bigr.append(l1+l2)
+ 
+n = 0
+for i in range(len(alfavit)): 
+    data[alfavit[i]] = bigr[n:len(alfavit)+n]
+    n = len(alfavit)+n
+data = data.T 
+
+
+for bigr_name in list(f1_2.keys()): 
+    i1,i2 = np.where(data == bigr_name) 
+    data.iloc[i1,i2] = f1_2[bigr_name] 
+    
+data.to_excel('bigr_fr_H1_nosp.xlsx') 
+
+
+data = pd.DataFrame(index = alfavit, columns=alfavit)
+
+bigr = []
+
+for l1 in alfavit: 
+    for l2 in alfavit: 
+        bigr.append(l1+l2)
+ 
+n = 0
+for i in range(len(alfavit)): 
+    data[alfavit[i]] = bigr[n:len(alfavit)+n]
+    n = len(alfavit)+n
+data = data.T 
+
+
+for bigr_name in list(f2_2.keys()): 
+    i1,i2 = np.where(data == bigr_name) 
+    data.iloc[i1,i2] = f2_2[bigr_name] 
+    
+data.to_excel('bigr_fr_H2_nosp.xlsx') 
