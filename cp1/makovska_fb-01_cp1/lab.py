@@ -131,7 +131,7 @@ print('\nНадлишковість: ', (1 - (e/math.log2(len(alfavit_sp)))))
 
 alfavit_sp = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'э', 'ж', 'з', 'и', 'ы', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ь', 'ю', 'я', ' ']
 alfavit = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'э', 'ж', 'з', 'и', 'ы', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ь', 'ю', 'я']
-data = pd.DataFrame(index = alfavit_sp, columns=alfavit_sp)
+data = pd.DataFrame(index = alfavit_sp, columns = alfavit_sp)
 
 bigr = []
 
@@ -142,7 +142,7 @@ for l1 in alfavit_sp: # створили біграми
 n = 0
 for i in range(len(alfavit_sp)): # занесли біграми в таблицю 
     data[alfavit_sp[i]] = bigr[n:len(alfavit_sp)+n]
-    n = len(alfavit_sp)+n
+    n = len(alfavit_sp) + n
 data = data.T # транспонували
 
 
@@ -153,7 +153,7 @@ for bigr_name in list(f1_1.keys()):
 data.to_excel('bigr_fr_H1.xlsx') 
 
 
-data = pd.DataFrame(index = alfavit_sp, columns=alfavit_sp)
+data = pd.DataFrame(index = alfavit_sp, columns = alfavit_sp)
 
 bigr = []
 
@@ -164,7 +164,7 @@ for l1 in alfavit_sp:
 n = 0
 for i in range(len(alfavit_sp)): 
     data[alfavit_sp[i]] = bigr[n:len(alfavit_sp)+n]
-    n = len(alfavit_sp)+n
+    n = len(alfavit_sp) + n
 data = data.T 
 
 
@@ -175,7 +175,7 @@ for bigr_name in list(f2_1.keys()):
 data.to_excel('bigr_fr_H2.xlsx') 
 
 
-data = pd.DataFrame(index = alfavit, columns=alfavit)
+data = pd.DataFrame(index = alfavit, columns = alfavit)
 
 bigr = []
 
@@ -186,7 +186,7 @@ for l1 in alfavit:
 n = 0
 for i in range(len(alfavit)): 
     data[alfavit[i]] = bigr[n:len(alfavit)+n]
-    n = len(alfavit)+n
+    n = len(alfavit) + n
 data = data.T 
 
 
@@ -197,7 +197,7 @@ for bigr_name in list(f1_2.keys()):
 data.to_excel('bigr_fr_H1_nosp.xlsx') 
 
 
-data = pd.DataFrame(index = alfavit, columns=alfavit)
+data = pd.DataFrame(index = alfavit, columns = alfavit)
 
 bigr = []
 
@@ -208,7 +208,7 @@ for l1 in alfavit:
 n = 0
 for i in range(len(alfavit)): 
     data[alfavit[i]] = bigr[n:len(alfavit)+n]
-    n = len(alfavit)+n
+    n = len(alfavit) + n
 data = data.T 
 
 
