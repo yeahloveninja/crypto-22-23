@@ -53,7 +53,7 @@ def calc_h2(bigrams):
 
     for i in unique_bigrams:
         probabilities[i] = ('{:.4f}'.format(bigrams.count(i)/bigrams_length))
-
+    probabilities = dict(sorted(probabilities.items(), key=lambda x: x[1], reverse=True))
     h2 = 0
     for i in probabilities.values():
         if float(i) <= 0:
@@ -64,8 +64,6 @@ def calc_h2(bigrams):
     print(f"H2 = {h2}")
 
     
-
-
 calc_h1(text)
 calc_h1(text_no_spaces)
 calc_h2(slide_bigrmas)
