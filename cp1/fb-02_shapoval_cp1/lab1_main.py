@@ -1,4 +1,4 @@
-from lab1_funcs import count_bgrs, count_letters, sort_dict, print_ngr_info, read_file_to_str, calc_P, calc_H
+from lab1_funcs import *
 
 
 fname1 = "mein_kampf_with_spaces.txt"
