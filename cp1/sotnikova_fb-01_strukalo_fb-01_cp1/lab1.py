@@ -17,10 +17,9 @@ def ourLetterFrequency(ourText):  # Підрахунок частоти наши
             objectLetterAmount[i] += 1
         else:
             objectLetterAmount[i] = 1
-
     generalSum = sum(objectLetterAmount.values())
     for symbol in objectLetterAmount:
-        # Обчислюємо частоту букв (ділимо к-сть символа на загальну к-сть)
+        # Обчислюємо частоту букв (ділимо к-сть входжень символа на загальну к-сть)
         objectLetterAmount[symbol] = objectLetterAmount[symbol]/generalSum
     return objectLetterAmount
 
@@ -44,13 +43,12 @@ def bigGramCouple(ourText, crossing):  # Підрахунок частоти б�
                 objectCoupleAmount[ourText[i:i+2]] += 1
             else:
                 objectCoupleAmount[ourText[i:i+2]] = 1
-
+                
     generalSum = sum(objectCoupleAmount.values())
     for couple in objectCoupleAmount:
     # Обчислюємо частоту біграм
         objectCoupleAmount[couple] = objectCoupleAmount[couple]/generalSum
     return objectCoupleAmount
-
 
 print("\nBigrams frequency with intersection")
 pprint(bigGramCouple(textWithSpaces, True))
