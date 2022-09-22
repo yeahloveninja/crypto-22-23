@@ -16,11 +16,11 @@ bgs2: dict[str, int] = dict()
 text1 = read_file_to_str(fname1)
 text2 = read_file_to_str(fname2)
 
-bgs1 = sort_dict(count_bgrs(text1))
-bgs2 = sort_dict(count_bgrs(text2))
+letters1 = sort_dict(count_ngrs(text1, 1))
+letters2 = sort_dict(count_ngrs(text2, 1))
 
-letters1 = sort_dict(count_letters(text1))
-letters2 = sort_dict(count_letters(text2))
+bgs1 = sort_dict(count_ngrs(text1, 2))
+bgs2 = sort_dict(count_ngrs(text2, 2))
 
 P_l1 = calc_P(letters1)
 P_l2 = calc_P(letters2)
