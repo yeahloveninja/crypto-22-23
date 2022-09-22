@@ -6,6 +6,7 @@ import math as m
 import numpy as np
 
 symbols = [' ', 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж','з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ','ы', 'ь', 'э', 'ю', 'я']
+symbols_2 = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж','з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ','ы', 'ь', 'э', 'ю', 'я']
 
 #create list of every possible bigrams using alphabet(symbols)
 global bg
@@ -43,13 +44,13 @@ def createDataFrame(quantity, periodicity):
 	print(df.head(10))
 	
 #periodicity matrix for bigram
-def createbgDataFrame(bigram, periodicity):
+def createbgDataFrame(bigram, periodicity, symb):
 	global bg
-	df = pd.DataFrame(index = symbols, columns=symbols)	
+	df = pd.DataFrame(index = symb, columns=symb)	
 	n = 0
-	for i in range(0,len(symbols)):
-    		df[symbols[i]] = bg[n:len(symbols)+n]
-    		n = len(symbols)+n
+	for i in range(0,len(symb)):
+    		df[symb[i]] = bg[n:len(symb)+n]
+    		n = len(symb)+n
 	df = df.T
 	for i in list(periodicity.keys()):
     		x,y = np.where(df == i)
@@ -96,18 +97,17 @@ period1 = {l: quantity1[l]/len(snote1) for l in quantity1 }
 period2 = {l: quantity2[l]/len(snote2) for l in quantity2 }
 
 
-bigram_cross1 = bigramCross(new_note1)
-bigram_cross2 = bigramCross(new_note2)
-bigram1 = bigram(new_note1)
-bigram2 = bigram(new_note2)
-
 #bigram without spaces
+bigram_cross1 = bigramCross(new_note1)
+bigram1 = bigram(new_note1)
 bg_cross_q1 = dict(collections.Counter(bigram_cross1))
 bg_q1 = dict(collections.Counter(bigram1))
 bg_cross_period1 = {l: bg_cross_q1[l] / len(bigram_cross1) for l in bg_cross_q1}
 bg_period1 = {l: bg_q1[l] / len(bigram1) for l in bg_q1}
 
 #bigram with spaces
+bigram_cross2 = bigramCross(new_note2)
+bigram2 = bigram(new_note2)
 bg_cross_q2 = dict(collections.Counter(bigram_cross2))
 bg_q2 = dict(collections.Counter(bigram2))
 bg_cross_period2 = {l: bg_cross_q2[l] / len(bigram_cross2) for l in bg_cross_q2}
@@ -115,19 +115,25 @@ bg_period2 = {l: bg_q2[l] / len(bigram2) for l in bg_q2}
 
 print('////////////////////WITHOUT SPACES///////////////////')
 createDataFrame(quantity1, period1)
-print("H_1 without spaces: ",H_1(period1))
-#createbgDataFrame(bigram_cross1, bg_cross_period1)
-print("H_2 cross without spaces: ",H_2(bigram_cross1, bg_cross_period1))
-#createbgDataFrame(bigram1, bg_period1)
-print("H_2 without spaces: ",H_2(bigram1, bg_period1),'\n')
+print("\nH_1(entropy) without spaces: ",H_1(period1))
+print("Excess_1: ",(1-(H_1(period1)/m.log2(len(symbols_2)))))
+#createbgDataFrame(bigram_cross1, bg_cross_period1, symbols_2)
+print("H_2(entropy) cross without spaces: ",H_2(bigram_cross1, bg_cross_period1))
+print("Excess_2: ",(1-(H_2(bigram_cross1, bg_cross_period1)/m.log2(len(symbols_2)))))
+#createbgDataFrame(bigram1, bg_period1, symbols_2)
+print("H_2(entropy) without spaces: ",H_2(bigram1, bg_period1))
+print("Excess_3: ",(1-(H_2(bigram1, bg_period1)/m.log2(len(symbols_2)))), '\n')
 
 print('////////////////////WITH SPACES////////////////////')
 createDataFrame(quantity2, period2)	
-print("H_1 with spaces: ",H_1(period2))
-#createbgDataFrame(bigram_cross2, bg_cross_period2)
-print("H_2 cross with spaces: ",H_2(bigram_cross2, bg_cross_period2))
-#createbgDataFrame(bigram2, bg_period2)
-print("H_2 with spaces: ",H_2(bigram2, bg_period2))
+print("\nH_1(entropy) with spaces: ",H_1(period2))
+print("Excess_4: ",(1-(H_1(period2)/m.log2(len(symbols)))))
+#createbgDataFrame(bigram_cross2, bg_cross_period2, symbols)
+print("H_2(entropy) cross with spaces: ",H_2(bigram_cross2, bg_cross_period2))
+print("Excess_5: ",(1-(H_2(bigram_cross2, bg_cross_period2)/m.log2(len(symbols)))))
+#createbgDataFrame(bigram2, bg_period2, symbols)
+print("H_2(entropy) with spaces: ",H_2(bigram2, bg_period2))
+print("Excess_6: ",(1-(H_2(bigram2, bg_period2)/m.log2(len(symbols)))))
 
 
 		
