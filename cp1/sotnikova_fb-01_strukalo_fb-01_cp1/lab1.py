@@ -51,16 +51,16 @@ def bigGramCouple(ourText, crossing):  # Підрахунок частоти б�
     return objectCoupleAmount
 
 print("\nBigrams frequency with intersection")
-pprint(bigGramCouple(textWithSpaces, True))
+#pprint(bigGramCouple(textWithSpaces, True))
 print("\nBigrams frequency without intersection")
-pprint(bigGramCouple(textWithSpaces, False))
+#pprint(bigGramCouple(textWithSpaces, False))
 
 ######################################################################################################
 
 print("\nBigrams frequency with intersection")
-pprint(bigGramCouple(textWithOutSpaces, True))
+#pprint(bigGramCouple(textWithOutSpaces, True))
 print("\nBigrams frequency without intersection")
-pprint(bigGramCouple(textWithOutSpaces, False))
+#pprint(bigGramCouple(textWithOutSpaces, False))
 
 
 def entropia(ourText, n=1, crossing=True):
