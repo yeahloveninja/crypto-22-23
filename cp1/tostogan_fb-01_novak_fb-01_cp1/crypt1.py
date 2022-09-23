@@ -17,11 +17,11 @@ for i in symbols:
 
 note = open("/home/kali/lab1.txt").read()
 #edit text: delete punctuation marks and spaces, replace capital letters with lowercase letters
-note = note.replace("\n"," ")
+note = note.replace("\n","")
 note = note.lower()
 new_note1 = re.sub( r'[^а-яё]', '', note )
 new_note2 = re.sub( r'[^а-яё ]', '', note )
-#print(new_note)
+#print(new_note2)
 snote1 = sorted(new_note1)
 snote2 = sorted(new_note2)
 #print(snote1)
@@ -40,7 +40,8 @@ def createDataFrame(quantity, periodicity):
 	df= pd.DataFrame(index = squantity)
 	df['quantity'] = temp1 
 	df['periodicity'] = temp2
-	#df.to_excel("letters.xlsx")
+	name=input('Enter name of excel: ')
+	df.to_excel(f'{name}.xlsx')
 	print(df.head(10))
 	
 #periodicity matrix for bigram
@@ -58,6 +59,8 @@ def createbgDataFrame(bigram, periodicity, symb):
 	for i in bg:
 		x,y = np.where(df == i)
 		df.iloc[x,y] = 0
+	name=input('Enter name of excel: ')
+	df.to_excel(f'{name}.xlsx')
 	print(df)
 
 #Create bigrams(w/o crossing)
