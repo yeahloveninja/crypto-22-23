@@ -3,7 +3,7 @@
 
 import re 
 import math
-import pandas as pd
+#import pandas as pd
 # func for editing text 
 def txteditor(file_name):
     with open(file_name, 'r', encoding='utf-8') as file: #open your file -> read text -> close
