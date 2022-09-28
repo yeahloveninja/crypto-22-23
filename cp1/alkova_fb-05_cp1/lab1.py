@@ -41,8 +41,8 @@ def bifrequency(text, cross):
                 freq[text[i:i+2]] += 1
         total1 = sum(freq.values())
         #print(total1)
-        #print(len(text)-1) - таку перевірку я робила ще до того як був зроблений фінальний код, 
-        #вивід однаковий в обох випадках(не знаю чи це просто випадок такий щасливий, але..), проте як ви і порадили зробила так що б ділилось саме на кількість біграм
+        #print(len(text)-1) - such check was done before the final code, and both outputs were the same, that's why i left case with len(...). 
+        #Anyway now i've replaced it with more correct option  
         for x in freq:
             freq[x] = round(freq[x]/total1,8) #i use round because numbers are too big
     elif cross == 'n':  # same case as above 
