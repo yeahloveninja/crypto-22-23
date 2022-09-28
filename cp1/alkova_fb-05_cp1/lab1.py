@@ -39,16 +39,23 @@ def bifrequency(text, cross):
                 freq[text[i:i+2]] = 1 #taking two letters
             else:
                 freq[text[i:i+2]] += 1
+        total1 = sum(freq.values())
+        #print(total1)
+        #print(len(text)-1) - such check was done before the final code, and both outputs were the same, that's why i left case with len(...). 
+        #Anyway now i've replaced it with more correct option  
         for x in freq:
-            freq[x] = round(freq[x]/(len(text)-1),8) #i use round because numbers are too big
+            freq[x] = round(freq[x]/total1,8) #i use round because numbers are too big
     elif cross == 'n':  # same case as above 
         for i in range(0, len(text)-1, 2): # step 2 
             if text[i:i+2] not in freq:
                 freq[text[i:i+2]] = 1
             else:
                 freq[text[i:i+2]] += 1
+        total2 = sum(freq.values())
+        #print(total2)
+        #print((len(text)-1)/2)
         for x in freq:
-            freq[x] = round(freq[x]/int((len(text)-1)/2),8)
+            freq[x] = round(freq[x]/total2,8)
     freq = dict(sorted(freq.items())) # sorting, better remove in order the output of bigramms was more understandable
     return freq
 
