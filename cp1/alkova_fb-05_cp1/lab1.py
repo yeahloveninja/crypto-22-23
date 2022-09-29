@@ -27,7 +27,7 @@ def monofrequency(text):
         else:
             freq[i] +=1
     for x in freq:
-        freq[x] = round(freq[x]/len(text), 6) # calculating frequency
+        freq[x] = freq[x]/len(text) # calculating frequency
     freq = dict(sorted(freq.items())) # just sorting. we can use it or simply remove
     return freq
 
@@ -87,21 +87,21 @@ file2.close()
 print("*********** Here is the full analysis of text with spaces ***********")
 #for mono 
 x1 = monofrequency(spacetext)
-print("----Frequency of each letter in the text(including space):\n", x1) 
+#print("----Frequency of each letter in the text(including space):\n", x1) 
 x2 = print_entropy(x1,1)
 print("-----H1:\n", x2)
 x3 = print_R(x2, 34)
 print("-----R:\n", x3)
 #for cross bi
 x4 = bifrequency(spacetext, 'y')
-print("----Frequency of cross bigramms:\n", x4) 
+#print("----Frequency of cross bigramms:\n", x4) 
 x5 = print_entropy(x4,2)
 print("-----H2:\n", x5)
 x6 = print_R(x5, 34)
 print("-----R:\n", x6)
 # for simple bi
 x7 = bifrequency(spacetext, 'n')
-print("----Frequency of simple bigramms:\n", x7) 
+#print("----Frequency of simple bigramms:\n", x7) 
 x8 = print_entropy(x7,2)
 print("-----H2:\n", x8)
 x9 = print_R(x8, 34)
@@ -111,21 +111,21 @@ print("-----R:\n", x9)
 print("\n*********** Here is the full analysis of text without spaces ***********")
 #for mono 
 y1 = monofrequency(nospacetext)
-print("----Frequency of each letter in the text:\n", y1) 
+#print("----Frequency of each letter in the text:\n", y1) 
 y2 = print_entropy(y1,1)
-print("-----H1:\n", x2)
+print("-----H1:\n", y2)
 y3 = print_R(y2, 33)
 print("-----R:\n", y3)
 #for cross bi
 y4 = bifrequency(nospacetext, 'y')
-print("----Frequency of cross bigramms:\n", y4) 
+#print("----Frequency of cross bigramms:\n", y4) 
 y5 = print_entropy(y4,2)
 print("-----H2:\n", y5)
 y6 = print_R(y5, 33)
 print("-----R:\n", y6)
 # for simple bi
 y7 = bifrequency(nospacetext, 'n')
-print("----Frequency of simple bigramms:\n", y7) 
+#print("----Frequency of simple bigramms:\n", y7) 
 y8 = print_entropy(y7,2)
 print("-----H2:\n", y8)
 y9 = print_R(y8, 33)
