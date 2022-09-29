@@ -12,9 +12,22 @@ def calc_H(n:int, P: list[float]):
     return round(-sum/n, 4)
 
 
-def count_ngrs(text:str, n: int = 1):
+# count with crosses    ("abcdef" contains "ab", "bc", "cd", "de", "ef")
+def count_ngrs_cross(text:str, n: int = 1):
     ngrs: dict[str, int] = dict()
     for i in range(len(text)-n+1):
+        ngr = text[i:i+n]
+        if (ngr in ngrs.keys()):
+            ngrs[ngr] += 1
+        else:
+            ngrs[ngr] = 1
+    return ngrs
+
+
+# count without crosses    ("abcdef" contains "ab", "cd", "ef")
+def count_ngrs_seq(text:str, n: int = 2):
+    ngrs: dict[str, int] = dict()
+    for i in range(0, len(text)//n*n, n):
         ngr = text[i:i+n]
         if (ngr in ngrs.keys()):
             ngrs[ngr] += 1
@@ -28,7 +41,7 @@ def sort_dict(bgs: dict[str, int], dsc: bool = True):
     return dict(sorted(bgs.items(), key = lambda i: int(i[1]), reverse=dsc))
 
 
-# some sh1tcode
+# just some sh1tcode for printing
 def print_ngr_info(d: dict[str, int], P: dict[str, int] = None, n: int = 10):
     ngrs = list(d.keys())[0:n]
     if (P != None):

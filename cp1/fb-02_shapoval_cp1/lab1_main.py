@@ -1,48 +1,53 @@
 from lab1_funcs import *
 
-
 fname1 = "mein_kampf_with_spaces.txt"
 fname2 = "mein_kampf_no_spaces.txt"
 
-text1 = ''
-text2 = ''
-
-letters1: dict[str, int] = dict()
-letters2: dict[str, int] = dict()
-
-bgs1: dict[str, int] = dict()
-bgs2: dict[str, int] = dict()
-
-text1 = read_file_to_str(fname1)
-text2 = read_file_to_str(fname2)
-
-letters1 = sort_dict(count_ngrs(text1, 1))
-letters2 = sort_dict(count_ngrs(text2, 1))
-
-bgs1 = sort_dict(count_ngrs(text1, 2))
-bgs2 = sort_dict(count_ngrs(text2, 2))
-
-P_l1 = calc_P(letters1)
-P_l2 = calc_P(letters2)
-
-P_ngs1 = calc_P(bgs1)
-P_ngs2 = calc_P(bgs2)
+text1: str = read_file_to_str(fname1)
+text2: str = read_file_to_str(fname2)
 
 
+letters1: dict[str, int] = sort_dict(count_ngrs_cross(text1, 1))
+letters2: dict[str, int] = sort_dict(count_ngrs_cross(text2, 1))
 
-print(f"\nletters - with spaces")
+bgrs1_crs: dict[str, int] = sort_dict(count_ngrs_cross(text1, 2))
+bgrs2_crs: dict[str, int] = sort_dict(count_ngrs_cross(text2, 2))
+
+bgrs1_seq: dict[str, int] = sort_dict(count_ngrs_seq(text1, 2))
+bgrs2_seq: dict[str, int] = sort_dict(count_ngrs_seq(text2, 2))
+
+
+P_l1: dict[str, float] = calc_P(letters1)
+P_l2: dict[str, float] = calc_P(letters2)
+
+P_ngs1_crs: dict[str, float] = calc_P(bgrs1_crs)
+P_ngs2_crs: dict[str, float] = calc_P(bgrs2_crs)
+
+P_ngs1_seq: dict[str, float] = calc_P(bgrs1_seq)
+P_ngs2_seq: dict[str, float] = calc_P(bgrs2_seq)
+
+
+print(f"\nletters - with ' '")
 print_ngr_info(letters1, P_l1)
 print(f"--  H1 = {calc_H(1, [i for i in P_l1.values()])}")
 
-print(f"\nletters - without spaces")
+print(f"\nletters - without ' '")
 print_ngr_info(letters2, P_l2)
 print(f"--  H1 = {calc_H(1, [i for i in P_l2.values()])}")
 
-print(f"\nbgs - with spaces")
-print_ngr_info(bgs1, P_ngs1)
-print(f"--  H2 = {calc_H(2, [i for i in P_ngs1.values()])}")
+print(f"\nbgs, crs - with ' '")
+print_ngr_info(bgrs1_crs, P_ngs1_crs)
+print(f"--  H2 = {calc_H(2, [i for i in P_ngs1_crs.values()])}")
 
-print(f"\nbgs - without spaces")
-print_ngr_info(bgs2, P_ngs2)
-print(f"--  H2 = {calc_H(2, [i for i in P_ngs2.values()])}")
+print(f"\nbgs, crs - without ' '")
+print_ngr_info(bgrs2_crs, P_ngs2_crs)
+print(f"--  H2 = {calc_H(2, [i for i in P_ngs2_crs.values()])}")
+
+print(f"\nbgs, seq - with ' '")
+print_ngr_info(bgrs1_seq, P_ngs1_seq)
+print(f"--  H2 = {calc_H(2, [i for i in P_ngs1_seq.values()])}")
+
+print(f"\nbgs, seq - without ' '")
+print_ngr_info(bgrs2_seq, P_ngs2_seq)
+print(f"--  H2 = {calc_H(2, [i for i in P_ngs2_seq.values()])}")
 
