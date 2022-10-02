@@ -25,3 +25,14 @@ def stripped_lines(text, value):                   # робимо єдиний �
                 stripped_line = line.strip()
             newline_breaks += stripped_line.lower()
         return newline_breaks
+
+
+def pretty_text(text, value):                       # приводимо текст до потрібного нам за завданням
+    if value == 1:          # ставимо пробіл?
+        newline_breaks = stripped_lines(text, value)
+        newline_breaks = without_punctuation(newline_breaks, value)
+        return newline_breaks
+    elif value == 0:        # не ставимо пробіл?
+        newline_breaks = stripped_lines(text, value)
+        newline_breaks = without_punctuation(newline_breaks, value)
+        return newline_breaks
