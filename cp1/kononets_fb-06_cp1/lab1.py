@@ -1,3 +1,5 @@
+from math import log2
+
 alphabet_with_gap = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя '
 alphabet = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
 
@@ -82,3 +84,16 @@ def bigram_frequency(text, my_alphabet, boolean_value):     # частота з�
         for key in bigram_count.keys():
             bigram_frequency_is[key] = round(bigram_count[key]/(len(text)/2), 9)
     return bigram_frequency_is
+
+
+def entropy(dictionary, n):                 # знаходимо ентропію за формулою з методички(де n - це n-грамма)
+    entropy_list = []
+    for key in dictionary.keys():
+        if dictionary[key] != 0:
+            entropy_list.append(float(dictionary[key]) * log2(dictionary[key])/n)
+    result = - sum(entropy_list)
+    return result
+
+
+def redundancy_of_language(found_entropy, my_alphabet):      # знаючи ентропію, обчислюємо надлишковість
+    return 1 - (found_entropy/log2(len(my_alphabet)))        # формула з методички
