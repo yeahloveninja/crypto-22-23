@@ -3,9 +3,9 @@ from collections import Counter
 import math
 import pandas as pd
 
-file = open("text.txt", encoding='utf8')
-text = file.read()
-file.close()
+with open("text.txt", encoding='utf8') as file:
+    text = file.read()
+
 alphabet_without_spaces = 'абвгдеёэжзиыйклмнопрстуфхцчшщъьюя'
 al = []
 for i in alphabet_without_spaces:
@@ -15,16 +15,9 @@ alphabet_with_spaces = ' абвгдеёэжзиыйклмнопрстуфхцч�
 for i in alphabet_with_spaces:
     alsp.append(i)
 
-def check(text): # функція очищення тексту для подальшого використання у завданні
-    reg = re.compile('[^а-яёА-ЯЁ ]')   # забирає спецсимволи і навіть цифри
-    new = reg.sub('', text)
-    return new
-
-
-splited = check(text).split(' ')
-arr = [word.rstrip('.,').lower() for word in splited if word]
-cleansp = ' '.join(arr)
-clean = ''.join(arr)
+splited = re.compile('[^а-яёА-ЯЁ ]').sub('', text).rstrip('.,').lower().split(' ')
+cleansp = ' '.join(splited)
+clean = ''.join(splited)
 clean_textsp = open('clean_textsp.txt', 'w')
 clean_textsp.write(cleansp)  # текст з пробілами
 clean_text = open('clean_text.txt', 'w')
@@ -51,7 +44,7 @@ def letters_frequency(txt):  # функція для підрахунку час
     print('R:', R)
 
     letters_data = pd.DataFrame(data=frequency, index=['частота'])
-    print(letters_data)
+    #print(letters_data)
     letters_data.to_excel('frequency_of_letters.xlsx')
 
 
@@ -73,16 +66,16 @@ def bigrams_frequency(txt, intersection=True):  #частота біграм
             bigram = txt[i] + txt[i + 1]
             c[bigram] += 1  # рахуємо скільки разів зустрічається біграма
         for bigram in c.keys():
-            frequency[bigram] = c[bigram] / (2 * sum(c.values()))  # частота кожної біграми
+            frequency[bigram] = c[bigram] / sum(c.values())  # частота кожної біграми
             #print(bigram, frequency[bigram])
 
     else:  # біграми без перетину
-        for i in range(0, len(txt) - 2, 2):  # крок 2
+        for i in range(0, len(txt) - 1, 2):  # крок 2
             bigram = txt[i] + txt[i + 1]
             c[bigram] += 1  # рахуємо скільки разів зустрічається біграма
 
         for bigram in c.keys():
-            frequency[bigram] = c[bigram] / (2 * sum(c.values()))  # частота кожної біграми
+            frequency[bigram] = c[bigram] / sum(c.values())  # частота кожної біграми
             #print(bigram, frequency[bigram])
     
     # h2 обчислюємо ентропію
@@ -90,7 +83,7 @@ def bigrams_frequency(txt, intersection=True):  #частота біграм
     for i in frequency.values():
         if i > 0:
             total += i*math.log2(i)
-    h2 = -total
+    h2 = -total / 2
     print('H2:', h2)
 
     # обчислюємо надлишок
@@ -102,12 +95,11 @@ def bigrams_frequency(txt, intersection=True):  #частота біграм
     for i in range(0, len(al)):
         bigrams_data[al[i]] = big_fr[index:len(al) + index]
         index = len(al) + index
-    print(bigrams_data)
+    #print(bigrams_data)
 
     bigrams_data.to_excel('frequency_of_bigrams.xlsx')
 
 
-check('text.txt')
 letters_frequency(clean)
 bigrams_frequency(cleansp, intersection=False)
 
