@@ -6,6 +6,8 @@ from typing import Optional
 
 FILE = "file.txt"
 CLEAN_FILE = "clean_file.txt"
+ALPHABET_LENGTH = 33
+ALPHABET_LENGTH_WITH_SPACE = 34
 
 
 def clean_file() -> Optional[bool]:
@@ -64,7 +66,7 @@ def bgram_frequency(space=True, inter=False) -> dict:
 
 
 def entropy(f: dict, n: int) -> float:
-    """Count Hn"""
+    """Count H<n>"""
 
     e = -sum(p * math.log2(p) for p in f.values())
     e *= 1 / n
@@ -79,21 +81,21 @@ if __name__ == "__main__":
     clean_file()
 
     напечатать("H1 letters with spaces", entropy(monogram_frequency(space=True), 1))
-    напечатать("H1 redundancy letters with spaces", redundancy(entropy(monogram_frequency(space=True), 1), 34))
+    напечатать("H1 redundancy letters with spaces", redundancy(entropy(monogram_frequency(space=True), 1), ALPHABET_LENGTH_WITH_SPACE))
     напечатать("H1 letters without spaces", entropy(monogram_frequency(space=False), 1))
-    напечатать("H1 redundancy letters without spaces", redundancy(entropy(monogram_frequency(space=False), 1), 33))
+    напечатать("H1 redundancy letters without spaces", redundancy(entropy(monogram_frequency(space=False), 1), ALPHABET_LENGTH))
 
     напечатать("\n")
 
     напечатать("H2 bgram_frequency with spaces and with intersection", entropy(bgram_frequency(space=True, inter=True), 2))
-    напечатать("H2 redundancy bgram_frequency with spaces and with intersection", redundancy(entropy(bgram_frequency(space=True, inter=True), 2), 34))
+    напечатать("H2 redundancy bgram_frequency with spaces and with intersection", redundancy(entropy(bgram_frequency(space=True, inter=True), 2),ALPHABET_LENGTH_WITH_SPACE))
     
     напечатать("H2 bgram_frequency with spaces and without intersection", entropy(bgram_frequency(inter=False), 2))
-    напечатать("H2 redundancy bgram_frequency with spaces and without intersection", redundancy(entropy(bgram_frequency(space=True, inter=False), 2), 34))
+    напечатать("H2 redundancy bgram_frequency with spaces and without intersection", redundancy(entropy(bgram_frequency(space=True, inter=False), 2),ALPHABET_LENGTH_WITH_SPACE))
     
     напечатать("H2 bgram_frequency without spaces and with intersection", entropy(bgram_frequency(space=False, inter=True), 2))
-    напечатать("H2 redundancy bgram_frequency without spaces and with intersection", redundancy(entropy(bgram_frequency(space=False, inter=True), 2), 33))
+    напечатать("H2 redundancy bgram_frequency without spaces and with intersection", redundancy(entropy(bgram_frequency(space=False, inter=True), 2),ALPHABET_LENGTH ))
     
     напечатать("H2 bgram_frequency without spaces and without intersection", entropy(bgram_frequency(space=False, inter=False), 2))
-    напечатать("H2 redundancy bgram_frequency without spaces and without intersection", redundancy(entropy(bgram_frequency(space=False, inter=False), 2), 33))
+    напечатать("H2 redundancy bgram_frequency without spaces and without intersection", redundancy(entropy(bgram_frequency(space=False, inter=False), 2), ALPHABET_LENGTH))
     exit()
