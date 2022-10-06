@@ -16,6 +16,8 @@ def without_punctuation(string, value):             # прибираємо ус�
         if p not in text_punctuation:
             # банальна заміна символа у строчці
             string = string.replace(p, '')
+    while string.count("  "):
+        string = string.replace("  ", ' ')
     return string
 
 
@@ -24,7 +26,7 @@ def stripped_lines(text, value):                   # робимо єдиний �
         newline_breaks = ""
         for line in file:
             if value == 1:                         # ставимо пробіл?
-                stripped_line = line.strip() + " "
+                stripped_line = line.strip()
             elif value == 0:                        # не ставимо пробіл?
                 stripped_line = line.strip()
             newline_breaks += stripped_line.lower()
@@ -35,10 +37,13 @@ def pretty_text(text, value):                       # приводимо тек�
     if value == 1:          # ставимо пробіл?
         newline_breaks = stripped_lines(text, value)
         newline_breaks = without_punctuation(newline_breaks, value)
+
         return newline_breaks
     elif value == 0:        # не ставимо пробіл?
         newline_breaks = stripped_lines(text, value)
         newline_breaks = without_punctuation(newline_breaks, value)
+        while newline_breaks.count("  "):
+            newline_breaks = newline_breaks.replace("  ", ' ')
         return newline_breaks
 
 
@@ -61,8 +66,9 @@ def bigram_frequency(text, my_alphabet, boolean_value):     # частота з�
     bigram_frequency_is = {}
     for letter_1 in my_alphabet:
         for letter_2 in my_alphabet:
-            dict_key = letter_1 + letter_2
-            bigram_count[dict_key] = 0
+            if letter_1+letter_2 != "  ":
+                dict_key = letter_1 + letter_2
+                bigram_count[dict_key] = 0
 
     if boolean_value == 1:          # H1
         i = 0
@@ -74,17 +80,19 @@ def bigram_frequency(text, my_alphabet, boolean_value):     # частота з�
         for key in bigram_count.keys():
             bigram_frequency_is[key] = round(bigram_count[key]/(len(text)-1), 9)  # округлюю до 9 знаків для точності
 
-    else:                       # H2
-        if len(text) % 2 == 1:  # біграми з кроком 2
-            text += "о"
+    else:   # H2
+        if len(text) % 2 == 1:
+            k = 1
+        else:
+            k = 0
         i = 0
-        while i < len(text) - 1:            # усе інше аналогічно до H1
+        while i < len(text) - k:            # усе інше аналогічно до H1
             key = text[i] + text[i+1]
             bigram_count[key] = bigram_count[key] + 1
             i = i + 2                       # окрім цієї частини, бо крок 2
 
         for key in bigram_count.keys():
-            bigram_frequency_is[key] = round(bigram_count[key]/(len(text)/2), 9)
+            bigram_frequency_is[key] = round(bigram_count[key]/(len(text)//2), 9)
     return bigram_frequency_is
 
 
@@ -122,9 +130,9 @@ def add_notes_to_xl(str_note, value, column_row_for_note, column_row_for_val, st
 
 # Розкоментувати виводи нижче, якщо потрібно (уся інформація і так буде у табличці cp_lab1.xlsx)
 # print("---------------- Починаємо дослід для алфавіту з пробілом ----------------")
-txt_file_path = "/cp1/kononets_fb-06_cp1/some_text.txt"
+txt_file_path = "D:\\Python\\PycharmProjects\\crypto-22-23\\cp1\\kononets_fb-06_cp1\\some_text.txt"
 my_text = pretty_text(txt_file_path, True)
-file_path = "/cp1/kononets_fb-06_cp1/cp_lab1.xlsx"
+file_path = "D:\\Python\\PycharmProjects\\crypto-22-23\\cp1\\kononets_fb-06_cp1\\cp_lab1.xlsx"
 experiment_1 = frequency_of_letters(my_text, alphabet_with_gap)
 # print(experiment_1)
 make_xl_file(experiment_1, "experiment_1", file_path, 0)
@@ -146,7 +154,7 @@ rud_H1_1 = redundancy_of_language(en_H1_1, alphabet_with_gap)
 add_notes_to_xl("Надлишковість:", rud_H1_1, "D3", "E3", "experiment_H1_1", file_path)
 
 experiment_H2_1 = bigram_frequency(my_text, alphabet_with_gap, False)
-# print((experiment_H2_1))
+# print(experiment_H2_1)
 make_xl_file(experiment_H2_1, "experiment_H2_1", file_path, 2)
 en_H2_1 = entropy(experiment_H2_1, 2)
 # print(en_H2_1)
@@ -179,6 +187,7 @@ add_notes_to_xl("Надлишковість:", rud_H1_2, "D3", "E3", "experiment
 
 experiment_H2_2 = bigram_frequency(my_text_2, alphabet, False)
 # print(experiment_H2_2)
+# print(len(experiment_H2_2))
 make_xl_file(experiment_H2_2, "experiment_H2_2", file_path, 5)
 en_H2_2 = entropy(experiment_H2_2, 2)
 # print(en_H2_2)
