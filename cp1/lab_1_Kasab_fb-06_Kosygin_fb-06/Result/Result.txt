@@ -1,4 +1,4 @@
-------H1 entropy------
+---H1 entropy---
 H1:                                4.401484367688899
 H1 without spaces:                 4.460162425027035
 H1 with redundancy:                0.13483704843981703
