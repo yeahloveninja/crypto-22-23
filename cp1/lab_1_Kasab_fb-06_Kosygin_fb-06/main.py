@@ -53,7 +53,7 @@ def Entropy(ValueText, x):
     if x == 'bigram':
         Entropy = Entropy * 1 / 2
     return Entropy
-Result = '------H1 entropy------'
+Result = '---H1 entropy---'
 Result += '\nH1:                                ' + str(Entropy(H1Frequency, 'monogram'))
 Result += '\nH1 without spaces:                 ' + str(Entropy(ValueFrequency(ValueCounts(RfileNoSpaces)), 'monogram'))
 Result += '\nH1 with redundancy:                ' + str(Redundancy(Entropy(H1Frequency, 'monogram')))
