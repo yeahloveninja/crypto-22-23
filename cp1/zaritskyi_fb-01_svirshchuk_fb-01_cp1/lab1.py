@@ -11,10 +11,13 @@ userInput = input("+ з пробілами, - без пробілів: ")
 
 file = open("./lab1.TXT").read()
 file = file.lower()
-file = file.replace("\n"," ")
+file = file.replace("\n","")
 
 if userInput == "+":
     clearString = re.sub(r'[^\w\s]+|[\d]+|_+', '',file).strip()
+    clearString = re.sub(r'[\s\s]+', " ", clearString)
+    clearString = re.sub(r'[\s\s]+', " ", clearString)
+    clearString = re.sub(r'[\s\s]+', " ", clearString)
 else:
     clearString = re.sub(r'[\W\s]+|[\d]+|_+', '',file).strip()
 
@@ -164,6 +167,29 @@ if " " in df4.index:
 
 print("\n/// Таблиця частот непересічних біграм ///")
 print(df4)
+
+H0 = math.log(32,2)
+temp101 = 1.895429108
+temp102 = 2.621338130
+R101 = 1 - temp101 / H0
+R102 = 1 - temp102 / H0
+print("R10min", R101)
+print("R10max", R102)
+temp201 = 1.895935004
+temp202 = 2.636216938
+R201 = 1 - temp201 / H0
+R202 = 1 - temp202 / H0
+print("R20min", R201)
+print("R20max", R202)
+temp301 = 1.558360800
+temp302 = 2.261537094
+R301 = 1 - temp301 / H0
+R302 = 1 - temp302 / H0
+print("R30min", R301)
+print("R30max", R302)
+
+
+
 
 if "пробіл" in df.index:
     df.to_excel("Amount_with_space.xlsx")
