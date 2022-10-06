@@ -1,4 +1,5 @@
 import collections
+import unicodedata
 import pandas as pd
 import re
 import math as m
@@ -9,13 +10,15 @@ symbols_2 = ['а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж','з', 'и', 'й', '�
 
 #edit text: delete punctuation marks and spaces, replace capital letters with lowercase letters
 
-with open("/home/kali/lab1.txt", 'r', encoding='utf-8') as ofile:
+with open("/home/kali/Desktop/lab1.txt", 'r', encoding='utf-8') as ofile:
 	note = ofile.read()
 	note = note.replace("\n","")
 	note = note.lower()
 	new_note1 = re.sub( r'[^а-яё]', '', note )
-	new_note2 = re.sub( r'[^а-яё ]', '', note )	
-
+	new_note2 = re.sub( r'[^а-яё ]', '', note)
+	new_note2 = new_note2.replace("  "," ")	
+	
+#print(new_note2)
 snote1 = sorted(new_note1)
 snote2 = sorted(new_note2)
 
@@ -33,8 +36,8 @@ def createDataFrame(quantity, periodicity):
 	df= pd.DataFrame(index = squantity)
 	df['quantity'] = temp1 
 	df['periodicity'] = temp2
-	name=input('Enter name of excel: ')
-	df.to_excel(f'{name}.xlsx')
+	#name=input('Enter name of excel: ')
+	#df.to_excel(f'{name}.xlsx')
 	print(df.head(10))
 	
 #periodicity matrix for bigram
@@ -73,10 +76,10 @@ def bigram(new_note):
 		for i in range(0, len(new_note)):
 			bigram.append(new_note[i]+new_note[i+1])
 	else:
-		for i in range(0, len(new_note)-2,2):
+		for i in range(0, len(new_note)-1, 2):
 			bigram.append(new_note[i]+new_note[i+1])
 	return bigram
-	
+
 #H_1
 def H_1(periodicity):
 	h_1 = []
@@ -133,28 +136,28 @@ def frequency(periodicity):
 
 
 print('////////////////////WITHOUT SPACES///////////////////')
-#createDataFrame(quantity1, period1)
+createDataFrame(quantity1, period1)
 print("\nH_1(entropy) without spaces: ",H_1(period1))
 print("Excess_1: ",(1-(H_1(period1)/m.log2(len(symbols_2)))))
-#createbgDataFrame(bigram_cross1, bg_cross_period1, symbols_2)
-#frequency(bg_cross_period1)
+createbgDataFrame(bigram_cross1, bg_cross_period1, symbols_2)
+frequency(bg_cross_period1)
 print("\nH_2(entropy) cross without spaces: ",H_2(bg_cross_period1))
 print("Excess_2: ",(1-(H_2(bg_cross_period1)/m.log2(len(symbols_2)))))
 #createbgDataFrame(bigram1, bg_period1, symbols_2)
-#frequency(bg_period1)
+frequency(bg_period1)
 print("\nH_2(entropy) without spaces: ",H_2(bg_period1))
 print("Excess_3: ",(1-(H_2(bg_period1)/m.log2(len(symbols_2)))), '\n')
 
 print('////////////////////WITH SPACES////////////////////')
-#createDataFrame(quantity2, period2)	
+createDataFrame(quantity2, period2)	
 print("\nH_1(entropy) with spaces: ",H_1(period2))
 print("Excess_4: ",(1-(H_1(period2)/m.log2(len(symbols)))))
 #createbgDataFrame(bigram_cross2, bg_cross_period2, symbols)
-#frequency(bg_cross_period2)
+frequency(bg_cross_period2)
 print("\nH_2(entropy) cross with spaces: ",H_2(bg_cross_period2))
 print("Excess_5: ",(1-(H_2(bg_cross_period2)/m.log2(len(symbols)))))
 #createbgDataFrame(bigram2, bg_period2, symbols)
-#frequency(bg_period2)
+frequency(bg_period2)
 print("\nH_2(entropy) with spaces: ",H_2(bg_period2))
 print("Excess_6: ",(1-(H_2(bg_period2)/m.log2(len(symbols)))))
 
