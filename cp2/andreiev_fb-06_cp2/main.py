@@ -1,4 +1,4 @@
-from lib2to3.pgen2.pgen import generate_grammar
+import csv
 import re
 
 
@@ -67,4 +67,37 @@ def spot_key_length(text):
         indexes[key_length] = total
     return indexes
 
-print(spot_key_length(given_ct))
+indexes = spot_key_length(given_ct)
+
+blocks = []
+for block in range(16):
+    blocks.append(given_ct[block::16])
+
+max_frequencies = []
+key = ''
+for block in blocks:
+    frequencies = {}
+    for letter in set(block):
+        frequencies[letter] = block.count(letter) / len(block)
+    max_frequencies.append(max(frequencies, key=frequencies.get))
+
+for letter in max_frequencies:
+    key += alphabet[(alphabet.index(letter) - 14) % len(alphabet)]
+print(key)
+
+def vigenere_decrypt(ciphertext, key):
+    res = ''
+    for i in range(len(ciphertext)):
+        cipher_char = ciphertext[i]
+        key_char = key[i % len(key)]
+        cipher_num = alphabet_with_nums[cipher_char]
+        key_num = alphabet_with_nums[key_char]
+
+        open_char = reverse_alphabet_with_nums[(cipher_num - key_num) % len(alphabet)]
+        res += open_char
+    return res
+
+decrypted = vigenere_decrypt(given_ct, 'делолисоборотней')
+
+
+
