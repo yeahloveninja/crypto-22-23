@@ -1,3 +1,4 @@
+from lib2to3.pgen2.pgen import generate_grammar
 import re
 
 
@@ -14,9 +15,8 @@ def filter_text(text):
 with open("text.txt", 'r') as f:
     text = f.read()
 
-text = 'дыханиельдастильпятыйнифльхейм'
-# text = filter_text(text)
-key = 'самба'
+
+text = filter_text(text)
 
 def vigenere_encrypt(open_text, key):
     res = ''
@@ -32,5 +32,39 @@ def vigenere_encrypt(open_text, key):
     return res
 
 
-print(vigenere_encrypt(text, key))
-    
+keys = ['ро', 'кси', 'бета', 'сигма', 'танецклинковмеркурия']
+
+r2 = vigenere_encrypt(text, keys[0])
+r3 = vigenere_encrypt(text, keys[1])
+r4 = vigenere_encrypt(text, keys[2])
+r5 = vigenere_encrypt(text, keys[3])
+r20 = vigenere_encrypt(text, keys[4])
+
+
+def calc_index(text):
+    result = 0
+    for i in alphabet:
+        counted = text.count(i)
+        result += counted * (counted - 1)
+
+    result = result / (len(text) * (len(text) - 1))
+    return round(result, 5)
+
+with open("given_ct_var_5.txt", 'r') as f:
+    given_ct = f.read()
+
+given_ct = filter_text(given_ct).replace('\n', "")
+
+
+def spot_key_length(text):
+    indexes = {}
+    for key_length in range(2, len(alphabet)):
+        total = 0
+        for group in range(key_length):
+            block = text[group::key_length]
+            total += calc_index(block)
+        total = total / key_length
+        indexes[key_length] = total
+    return indexes
+
+print(spot_key_length(given_ct))
