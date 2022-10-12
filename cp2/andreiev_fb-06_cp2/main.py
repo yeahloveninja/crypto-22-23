@@ -1,4 +1,3 @@
-import csv
 import re
 
 
@@ -33,13 +32,6 @@ def vigenere_encrypt(open_text, key):
 
 
 keys = ['ро', 'кси', 'бета', 'сигма', 'танецклинковмеркурия']
-
-r2 = vigenere_encrypt(text, keys[0])
-r3 = vigenere_encrypt(text, keys[1])
-r4 = vigenere_encrypt(text, keys[2])
-r5 = vigenere_encrypt(text, keys[3])
-r20 = vigenere_encrypt(text, keys[4])
-
 
 def calc_index(text):
     result = 0
@@ -83,7 +75,6 @@ for block in blocks:
 
 for letter in max_frequencies:
     key += alphabet[(alphabet.index(letter) - 14) % len(alphabet)]
-print(key)
 
 def vigenere_decrypt(ciphertext, key):
     res = ''
@@ -99,5 +90,5 @@ def vigenere_decrypt(ciphertext, key):
 
 decrypted = vigenere_decrypt(given_ct, 'делолисоборотней')
 
-
+print(decrypted[:100])
 
