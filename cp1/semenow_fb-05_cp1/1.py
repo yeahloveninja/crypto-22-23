@@ -28,6 +28,14 @@ def find_bigram(text, counter):
     return bigrams, counter
 
 
+def no_cross_bigrams(text):
+    all_bigr, counter = find_bigram(text, 0)
+    res = {}
+    for i in all_bigr:
+        res[i] = float(all_bigr[i] / counter)
+    return res
+
+
 def cross_bigrams(text):
     text_first_letter = ""
     text_second_letter = ""
@@ -82,20 +90,28 @@ def to_fixed(num, digits=0):
 
 space_txt = open('2.txt', 'r').read()
 no_space_txt = open('3.txt', 'r').read()
+num_of_letters = 33
+num_of_letters_no_space = 34
 
 space_monograms = find_monogram(space_txt)  # монограммы
 space_monograms_entropy = find_entropy(space_monograms, 1)
-space_monograms_r = find_r(space_monograms_entropy, 34)
+space_monograms_r = find_r(space_monograms_entropy, num_of_letters_no_space)
 no_space_monograms = find_monogram(no_space_txt)
 no_space_monograms_entropy = find_entropy(no_space_monograms, 1)
-no_space_monograms_r = find_r(no_space_monograms_entropy, 33)
+no_space_monograms_r = find_r(no_space_monograms_entropy, num_of_letters)
 
-space_bigrams = cross_bigrams(space_txt)  # биграммы
+space_bigrams = no_cross_bigrams(space_txt)  # биграммы
 space_bigrams_entropy = find_entropy(space_bigrams, 2)
-space_bigrams_r = find_r(space_bigrams_entropy, 34)
-no_space_bigrams = cross_bigrams(no_space_txt)
+space_bigrams_r = find_r(space_bigrams_entropy, num_of_letters_no_space)
+space_no_cross_bigrams = cross_bigrams(space_txt)
+space_no_cross_bigrams_entropy = find_entropy(space_no_cross_bigrams, 2)
+space_no_cross_bigrams_r = find_r(space_no_cross_bigrams_entropy, num_of_letters_no_space)
+no_space_bigrams = no_cross_bigrams(no_space_txt)
 no_space_bigrams_entropy = find_entropy(no_space_bigrams, 2)
-no_space_bigrams_r = find_r(no_space_bigrams_entropy, 33)
+no_space_bigrams_r = find_r(no_space_bigrams_entropy, num_of_letters)
+no_cross_no_space_bigrams = cross_bigrams(no_space_txt)
+no_cross_no_space_bigrams_entropy = find_entropy(no_cross_no_space_bigrams, 2)
+no_cross_no_space_bigrams_r = find_r(no_cross_no_space_bigrams_entropy, num_of_letters)
 
 print(f"h1 in text with space {space_monograms_entropy}")
 print(f"r1 in text with space {space_monograms_r}")
@@ -104,10 +120,13 @@ print(f"r1 in text without space {no_space_monograms_r}\n")
 
 print(f"h2 in text with space {space_bigrams_entropy}")
 print(f"r2 in text with space {space_bigrams_r}")
+print(f"no cross h2 in text with space {no_space_bigrams_entropy}")
+print(f"no cross r2 in text with space {no_space_bigrams_r}")
 print(f"h2 in text without space {no_space_bigrams_entropy}")
 print(f"r2 in text without space {no_space_bigrams_r}")
+print(f"no cross h2 in text without space {no_cross_no_space_bigrams_entropy}")
+print(f"no cross r2 in text without space {no_cross_no_space_bigrams_r}")
 
-print_ngrams(no_space_monograms)
-print_ngrams(no_space_bigrams)
-
-# print_ngrams(space_bigrams)
+print_ngrams(no_cross_no_space_bigrams)
+# print_ngrams(no_space_bigrams)
+# print_ngrams(no_cross_bigrams(space_txt))

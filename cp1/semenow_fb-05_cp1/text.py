@@ -1,4 +1,4 @@
-txt = open('Havelok_Renegat.487727.txt', 'r', encoding='utf=8').read()
+txt = open('Havelok_Renegat.txt', 'r', encoding='utf=8').read()
 
 
 def create_txt(text):
