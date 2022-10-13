@@ -26,7 +26,6 @@ def bigram_frequency(space):
     letter_fusion = ''# злиття букв в біграму
     j = 0 # лічильник
     len_text = 0
-
     for i in text: # проходимось по всьому тексту 
         if (i == ' ' and space == 1): # ось тут позбуваємось пробілів
             continue
@@ -45,10 +44,20 @@ def bigram_frequency(space):
         else:
             bigrams[letter_fusion] += 1 # у всіх інших випадках додаємо 1
 
-        letter_fusion = ''
+        letter_fusion = '' 
 
-    j = 0              #перехресні біграми
-    letter_fusion = ''
+    for i in bigrams:
+        bigrams[i] = bigrams[i]/len_text
+
+    return bigrams
+
+def bigram_cross_frequency(space):
+
+    bigrams = {} # Словарь для біграм
+    letter_fusion = ''# злиття букв в біграму
+    j = 0 # лічильник
+    len_text = 0
+
     for i in text: # проходимось по всьому тексту 
         if (i == ' ' and space == 1): # ось тут позбуваємось пробілів
             continue
@@ -65,6 +74,7 @@ def bigram_frequency(space):
         else:
             break 
         len_text += 1
+
         if bigrams.get(letter_fusion) == None: # якщо ця біграма зустрілась вперше
             bigrams[letter_fusion] = 1 # то встановлюємо 1
         else:
@@ -75,7 +85,7 @@ def bigram_frequency(space):
     for i in bigrams:
         bigrams[i] = bigrams[i]/len_text
     return bigrams
-
+        
 
 def entropy_H1(dictionary):
     HZ = 0
@@ -91,7 +101,7 @@ def entropy_H2(dictionary):
     H2 = HZ / 2
     return H2
 
-def excess(dictionary,):
+def excess(dictionary):
     Hinf = 0
     counter = 0
     for i in dictionary:
@@ -105,16 +115,30 @@ letters = letter_frequency(0)
 letters_without_space = letter_frequency(1)
 bigrams = bigram_frequency(0)
 bigrams_without_space = bigram_frequency(1)
+bigrams_cross = bigram_cross_frequency(0)
+bigrams_cross_without_space = bigram_cross_frequency(1)
 
 
+print ('letters')
 print (entropy_H1(letters))
 print (excess(letters))
 
+print ('letters_without_space')
 print (entropy_H1(letters_without_space))
 print (excess(letters_without_space))
 
+print ('bigrams')
 print (entropy_H2(bigrams))
 print (excess(bigrams))
 
+print ('bigrams_without_space')
 print (entropy_H2(bigrams_without_space))
 print (excess(bigrams_without_space))
+
+print ('bigrams_cross')
+print (entropy_H2(bigrams_cross))
+print (excess(bigrams_cross))
+
+print ('bigrams_cross_without_space')
+print (entropy_H2(bigrams_cross_without_space))
+print (excess(bigrams_cross_without_space))
