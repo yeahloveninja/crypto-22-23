@@ -45,8 +45,7 @@ def cross_bigrams(text):
         text_second_letter += k
     text_first_letter, counter = find_bigram(text_first_letter, 0)
     text_second_letter, counter = find_bigram(text_second_letter, counter)
-    all_bigr, counter = find_bigram(text, counter)
-    dicts = (all_bigr, text_second_letter, text_first_letter)
+    dicts = (text_second_letter, text_first_letter)
     res = Counter()
     for k in dicts:
         res.update(k)
@@ -79,7 +78,7 @@ def sort_dict(dct):
 def print_ngrams(dct):
     column = sort_dict(dct)
     count = 0
-    for row in column:
+    for row in list(column.keys())[:10]:
         print(f"{row} --- {to_fixed(column[row], 10)}")
         count += column[row]
 
@@ -127,6 +126,12 @@ print(f"r2 in text without space {no_space_bigrams_r}")
 print(f"no cross h2 in text without space {no_cross_no_space_bigrams_entropy}")
 print(f"no cross r2 in text without space {no_cross_no_space_bigrams_r}")
 
+print_ngrams(space_bigrams)
+print('----------')
+print_ngrams(space_no_cross_bigrams)
+print('----------')
+print_ngrams(no_space_bigrams)
+print('----------')
 print_ngrams(no_cross_no_space_bigrams)
 # print_ngrams(no_space_bigrams)
 # print_ngrams(no_cross_bigrams(space_txt))
