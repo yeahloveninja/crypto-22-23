@@ -118,16 +118,3 @@ print (excess(bigrams))
 
 print (entropy_H2(bigrams_without_space))
 print (excess(bigrams_without_space))
-
-
-
-
-
-
-
-
-
-
-
-
-    
