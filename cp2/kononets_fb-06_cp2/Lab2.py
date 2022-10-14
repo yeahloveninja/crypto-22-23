@@ -1,8 +1,10 @@
+from collections import Counter
 alphabet = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
 path = 'D:\\Python\\PycharmProjects\\crypto-22-23\\cp2\\kononets_fb-06_cp2\\Crypto\\text.txt'
 dict_letters = dict(zip(alphabet, [i for i in range(32)]))
 revers_dict_letters = dict(zip([i for i in range(32)], alphabet))
-
+keys = ["ты", "сок", "ромб", "песик", "тарабанить", "антропотолерантность"]
+files = ["text_key1.txt", "text_key2.txt", "text_key3.txt", "text_key4.txt", "text_key5.txt", "text_key6.txt"]
 
 with open(path, 'r', encoding='utf-8') as f:
     my_text = f.read()
@@ -36,3 +38,29 @@ def vigenere(str_word, str_key, operation):     # шифрування/деши�
         if i in revers_dict_letters.keys():
             text += revers_dict_letters[i]  # щоб не робити циклу у циклі взяв реверс-словник літер
     return text
+
+
+def theoretical_i_of_conformity(text):      # індекс відповідності
+    index = 0
+    frequency = Counter(text)
+    for i in frequency:
+        index += frequency[i] * (frequency[i] - 1)      # сума: частота букви * частота букви - 1
+    index /= (len(text) * (len(text) - 1))              # відповідно ділимо на знаменник суму
+    return index
+
+
+def math_expectation(text):                 # математичне очікування
+    expectation = 0
+    frequency = Counter(text)
+    for i in frequency:
+        frequency[i] /= len(text)
+        expectation += pow(frequency[i], 2)   # частота літери у тексті в степені 2
+    return expectation
+
+
+# PART 1 ---------------------------------------------------------------------------------
+# for i in range(len(keys)):
+#     new_data = vigenere(my_text, keys[i], "enc")
+#     with open("D:\\Python\\PycharmProjects\\crypto-22-23\\cp2\\kononets_fb-06_cp2\\Crypto\\"+files[i],
+#     'w', encoding="utf-8") as f:
+#         f.write(new_data)
