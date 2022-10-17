@@ -24,9 +24,9 @@ def vigenere(str_word, str_key, operation):     # шифрування/деши�
     length_word = len(array_indexes)
     length_key = len(key_indexes)
     k = 0
-    while length_key < length_word:     # для того щоб повторювати ключ до довжини тексту
+    while length_key < length_word:     # для того, щоб повторювати ключ до довжини тексту
         key_indexes.append(key_indexes[k])
-        if k % length_key == k:         # так як довжина ключа фіксована, то повторюємо кожен раз коли ключ закінчується
+        if k % length_key == k:         # бо довжина ключа фіксована, то повторюємо кожен раз коли ключ закінчується
             k += 1
         length_key += 1               # збільшую довжину ключа коли він повторюється
     if operation == "enc":            # шифрування
@@ -60,7 +60,7 @@ def math_expectation(text):                 # математичне очіку�
     return expectation
 
 
-def text_into_blocks(text, r):               # ділимо текст на блоки Y1, Y2... Y(r) де r - довжина ключа
+def text_into_blocks(text, r):  # Ділимо текст на блоки Y1, Y2... Y(r) де r - довжина ключа
     text_blocks = []
     for i in range(r):
         text_blocks.append(text[i::r])
@@ -68,8 +68,8 @@ def text_into_blocks(text, r):               # ділимо текст на бл
 
 
 def len_key(text, expectation):              # пошук довжини ключа шляхом розбиття ШТ на блоки
-    r_i = []         # сюди додаю індекс відповідності  для кожного ключа
-    array_differences = []   # різниця між індексом відповідності та його теор. математичним очікуванням
+    r_i = []         # сюди додаю індекс відповідності для кожного ключа
+    array_differences = []   # Різниця між індексом відповідності та його теор. математичним очікуванням
     for r in range(2, 31):   # на проміжку від 2 до 30 включно за умовою
         index = 0
         blocks = text_into_blocks(text, r)
@@ -80,8 +80,52 @@ def len_key(text, expectation):              # пошук довжини клю�
     for i in range(len(r_i)):
         difference = abs(r_i[i] - expectation)
         array_differences.append(difference)
-    print(r_i)
-    return array_differences.index(min(array_differences)) + 2   # додаю два бо починав рахувати індекси з довжини r = 2
+    return array_differences.index(min(array_differences)) + 2  # додаю два, бо починав рахувати індекси з довжини r = 2
+
+
+def top_letter_in_cipher_text(text):            # найчастіша літера у ШТ
+    frequency_of_letters = Counter(text)
+    max_frequency = max(Counter(text).values())
+    for key, value in frequency_of_letters.items():
+        if value == max_frequency:
+            return key
+
+
+def find_out_the_expected_key(blocks):           # у кожному блоці частотним аналізом знаходимо можливу літеру ключа
+    expected_keys = []
+    text_top_letters = ["о", "е", "а", "и", "н", "т"]   # найчастіші літери у мові "о", "е", "а", "и", "н", "т"
+    for i in range(len(blocks)):
+        for_block = []
+        cipher_top_number = dict_letters[top_letter_in_cipher_text(blocks[i])]  # номер найчастішої літери ШТ
+        for j in text_top_letters:
+            text_top_number = dict_letters[j]
+            move = (cipher_top_number - text_top_number) % 32   # знаходимо літеру ключа
+            for_block.append(revers_dict_letters[move])
+        expected_keys.append(for_block)
+    return expected_keys
+
+
+def key_is_right(array):                        # перевірка: чи правильно підібрано ключ?
+    word = []
+    for i in range(len(array)):
+        word.append(array[i][0])
+        # виводимо ключ, що в нас був підібраний відповідно до найчастішої літери "о" для всіх блоків:
+        print(array[i][0], end="")
+    accepting = input("\nDoes key is right? (y/n): ")
+    # Якщо так, то ключ підібрано вірно, якщо ні, то наступне:
+    number_of_calls = [1]*len(array)  # робимо лічильник - скільки яку літеру ми вже міняли за замовчуванням 1,
+    # бо ми вже підібрали до кожного блоку ключ відповідно літері "о"
+    while accepting != "y":
+        # запитуємо номер літери ключа(номер рахується як номер місця де стоїть літера ключа що не підходить)
+        asking = int(input("Which number of letter isn't correct? "))
+        # тоді ми виводимо іншу ймовірну літеру, яка отримана з віднімання найчастішої літери ШТ та "е"
+        word[asking-1] = array[asking - 1][number_of_calls[asking - 1]]
+        print(word)  # виводимо ключ у форматі редагування (у масиві)
+        # знову запитуємо чи корректний ключ зараз
+        accepting = input("\nDoes key is right? (y/n): ")
+        # збільшуємо лічильник звертання до певної літери ключа
+        number_of_calls[asking-1] += 1
+    return print("We found the key!\n" + "".join(word))
 
 
 # PART 1 ---------------------------------------------------------------------------------
@@ -104,3 +148,13 @@ print("Index for my text: " + str(theoretical_i_of_conformity(my_text)))
 # Index for my encrypted text5: 0.03670957484999231
 # Index for my encrypted text6: 0.036412503585179105
 # Index for my text: 0.05621256930554843
+# PART 3 -----------------------------------------------------------------------------------
+length_of_key = len_key(cipher_text, math_expectation(my_text))
+print(f'Довжина ключа: {length_of_key}')
+blocks_of_text = text_into_blocks(cipher_text, length_of_key)
+expected_key = find_out_the_expected_key(blocks_of_text)
+# print(f'Ймовірний ключ: {expected_key}')
+key_is_right(expected_key)
+decrypt_cipher_text = vigenere(cipher_text, "арудазовархимаг", "dec")
+# with open(path + 'decrypt_cipher_text.txt', 'w', encoding='utf-8') as f:
+#     f.write(decrypt_cipher_text)
