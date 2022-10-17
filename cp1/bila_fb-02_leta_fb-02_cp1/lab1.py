@@ -29,7 +29,7 @@ def letters_frequency(txt):  # функція для підрахунку час
     frequency = {}
     total = 0
     for line in txt:
-        c += Counter(line)
+        c += Counter(line)  # рахуємо скільки разів зустрічається кожна літера в тексті
     for letter in alphabet_without_spaces:
         frequency[letter] = c[letter]/len(txt)
         #print(letter, frequency[letter])
@@ -101,6 +101,6 @@ def bigrams_frequency(txt, intersection=True):  #частота біграм
 
 
 letters_frequency(clean)
-bigrams_frequency(cleansp, intersection=False)
+bigrams_frequency(clean, intersection=False)
 
 info = pd.DataFrame(index=alphabet_without_spaces.split(), columns=alphabet_without_spaces.split())
