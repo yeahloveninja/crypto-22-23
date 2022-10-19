@@ -110,7 +110,7 @@ def gen_possible_keys(options: list[list[str]], cur_pos, last_pos):
                 yield o + n
 
 
-def find_key(ct: str, r: int):
+def guess_key(ct: str, r: int):
     most_common_list = [k for k in most_common.keys()]
     key = ''
     mc_ct_letters = [l[0] for l in top_letter_in_each_block(ct, r)]
