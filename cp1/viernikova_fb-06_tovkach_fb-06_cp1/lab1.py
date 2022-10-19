@@ -1,4 +1,5 @@
 from collections import Counter
+from heapq import nsmallest
 from math import log2
 # Спочатку відкриємо наш текст
 # text_file = open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/test.txt', 'r').read()
@@ -24,6 +25,8 @@ open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_no_space.txt', 'w').write(ns
 
 mono_text = Counter(text_file)
 #print(mono_text) 
+mono_ns_text = Counter(ns_text_file)
+
 
 def l_freq(dict):
     l_sum = sum(dict.values()) 
@@ -34,17 +37,21 @@ def l_ent(dict):
     for i in dict.keys():
         dict[i] = -(dict[i] * log2(dict[i])) 
 
-def l_R(entropy):
+def l_R(entropy, space = False):
+    if space == True:
         r = 1 - entropy / log2(32)
         return r
+    else:
+        r = 1 - entropy / log2(31)
+        return r
 
-l_freq(mono_text)
-#print(mono_text)
-l_ent(mono_text)
-#print(mono_text)
+l_freq(mono_ns_text)
+#print(mono_ns_text)
+l_ent(mono_ns_text)
+#print(mono_ns_text)
 
-all_entropy = sum(mono_text.values())
-#print(all_entropy)
-#print(l_R(all_entropy))
+all_entropy = sum(mono_ns_text.values())
+print(all_entropy)
+print(l_R(all_entropy))
 
 
