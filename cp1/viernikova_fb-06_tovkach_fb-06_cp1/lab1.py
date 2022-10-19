@@ -1,6 +1,6 @@
 from collections import Counter
-from heapq import nsmallest
 from math import log2
+import pandas as pd
 # Спочатку відкриємо наш текст
 # text_file = open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/test.txt', 'r').read()
 text_file = open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1.txt', 'r').read()
@@ -20,13 +20,12 @@ while "  " in text_file:
 ns_text_file = text_file.replace(' ', '')
 
 # запишемо очищенні тести у файли
-open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_space.txt', 'w').write(text_file)
-open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_no_space.txt', 'w').write(ns_text_file)
+# open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_space.txt', 'w').write(text_file)
+# open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_no_space.txt', 'w').write(ns_text_file)
 
-mono_text = Counter(text_file)
-#print(mono_text) 
-mono_ns_text = Counter(ns_text_file)
-
+bigram = Counter([text_file[i:i + 2] for i in range(0, len(text_file) - 1)])
+# print(bigram) 
+bg_df = pd.DataFrame(list(bigram.items()), columns=['Біграма', 'к-сть.'])
 
 def l_freq(dict):
     l_sum = sum(dict.values()) 
@@ -45,13 +44,15 @@ def l_R(entropy, space = False):
         r = 1 - entropy / log2(31)
         return r
 
-l_freq(mono_ns_text)
-#print(mono_ns_text)
-l_ent(mono_ns_text)
-#print(mono_ns_text)
+l_freq(bigram)
+bg_df['Частота'] = bigram.values()
+l_ent(bigram)
+bg_df['Ентропія'] = bigram.values()
 
-all_entropy = sum(mono_ns_text.values())
-print(all_entropy)
-print(l_R(all_entropy))
+bg_df.to_csv('cp1/viernikova_fb-06_tovkach_fb-06_cp1/test.csv', index=False)
+all_entropy = sum(bigram.values())/2
+print(f'Загальна ентропія: {all_entropy}')
+print(f'Надлишковість: {l_R(all_entropy)}')
+
 
 
