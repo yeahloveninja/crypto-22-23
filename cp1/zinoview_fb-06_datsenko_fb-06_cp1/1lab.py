@@ -12,7 +12,7 @@ text = open('thetext.txt', encoding='utf-8', mode='r').read().lower()
 
 for u in ["\n", "\r"]:
     text = text.replace(u, ' ')
-for i in list("-01234567890!,.#;:?abcdefghijklmnopqrstuvwxyz()/_’\"«»&[]{}–…	 *<>„“—"):
+for i in list("-01234567890!,.#;:?abcdefghijklmnopqrstuvwxyz()/_’\"«»&[]{}–…	 *<>„“—"):  # тут пропал символ
     text = text.replace(i, '')
 for _ in range(0, 3):
     text = text.replace("     ", " ").replace("   ", " ").replace("  ", " ")
@@ -28,8 +28,12 @@ splitted_letters = list(text)
 length_spll = len(splitted_letters)
 
 
-bigram_set_1 = {}  # with spaces
+bigram_set_1 = {}  # with spaces step 1
 bigram_set_2 = {}  # without them
+
+bigram_set2_1 = {}  # with spaces step 2
+bigram_set2_2 = {}  # without them
+
 set_with_spaces = {}
 set_without_spaces = {}
 
@@ -42,13 +46,14 @@ def adding(words, frequency):
             frequency[i] = 1
 
 
-def adding_bigram_list(array, amounts):
+def adding_bigram_list(array, amounts, step):
     length = len(array)
     for i in range(0, length):
         if i != length - 1:
-            adding([array[i] + array[i+1]], amounts)
+            if i % step == 0:
+                adding([array[i] + array[i+1]], amounts)
         else:
-            adding([array[i] + array[-1]], amounts)
+            break
     return amounts
 
 
@@ -71,7 +76,6 @@ def count_entropy_value(dictionary):
     result = 0
     for j in range(0, len(dictionary)):
         p = mpf(((list(dictionary[j]))[1]))
-        # print(str(dictionary[j])+' '+str(p))
         result += p * log2(p)
     return -result / n
 
@@ -86,55 +90,75 @@ adding(text_without_spaces, set_without_spaces)
 
 letter_frequency_set1 = replace(set_with_spaces, amount_with_spaces)
 letter_frequency_set2 = replace(set_without_spaces, amount_without_spaces)
-bigrams_frequency_set1 = replace_bigrams(adding_bigram_list(text, bigram_set_1), 0)
-bigrams_frequency_set2 = replace_bigrams(adding_bigram_list(text_without_spaces, bigram_set_2), 0)
+bigrams_frequency_set1_1 = replace_bigrams(adding_bigram_list(text, bigram_set_1, 1), 0)  # with step 1
+bigrams_frequency_set1_2 = replace_bigrams(adding_bigram_list(text_without_spaces, bigram_set_2, 1), 0)  # with step 1
 
-print("H:")
-print(count_entropy_value(letter_frequency_set1))
-print(count_entropy_value(letter_frequency_set2))
-print(count_entropy_value(bigrams_frequency_set1))
-print(count_entropy_value(bigrams_frequency_set2))
+
+bigrams_frequency_set2_1 = replace_bigrams(adding_bigram_list(text, bigram_set2_1, 2), 0)  # with step 2
+bigrams_frequency_set2_2 = replace_bigrams(adding_bigram_list(text_without_spaces, bigram_set2_2, 2), 0)  # with step 2
+
 
 df = pd.DataFrame(letter_frequency_set1)
 df1 = pd.DataFrame(letter_frequency_set2)
-df2 = pd.DataFrame(bigrams_frequency_set1[0:10])
-df3 = pd.DataFrame(bigrams_frequency_set2[0:10])
+df2 = pd.DataFrame(bigrams_frequency_set1_1[0:10])
+df3 = pd.DataFrame(bigrams_frequency_set1_2[0:10])
+df4 = pd.DataFrame(bigrams_frequency_set2_1[0:10])
+df5 = pd.DataFrame(bigrams_frequency_set2_2[0:10])
 
 writer = pd.ExcelWriter("tables.xlsx", engine="xlsxwriter")
 
 df.to_excel(writer, startrow=0, startcol=0, sheet_name = 'Symbols')
 worksheet = writer.sheets['Symbols']
 worksheet.write(0, 1, "Symbols")
-worksheet.write(0, 2, "Frequency")
+worksheet.write(0, 2, "Probability")
 df1.to_excel(writer, startrow=0, startcol=0, sheet_name = 'Letters')
 worksheet = writer.sheets['Letters']
 worksheet.write(0, 1, "Symbols",)
-worksheet.write(0, 2, "Frequency")
+worksheet.write(0, 2, "Probability")
 df2.to_excel(writer, startrow=0, startcol=0, sheet_name = 'Bigrams')
 worksheet = writer.sheets['Bigrams']
 worksheet.write(0, 1, "Bigrams",)
-worksheet.write(0, 2, "Frequency")
+worksheet.write(0, 2, "Probability")
 df3.to_excel(writer, startrow=0, startcol=0, sheet_name = 'Bigrams_no_spaces')
 worksheet = writer.sheets['Bigrams_no_spaces']
 worksheet.write(0, 1, "Bigrams",)
-worksheet.write(0, 2, "Frequency")
+worksheet.write(0, 2, "Probability")
+df4.to_excel(writer, startrow=0, startcol=0, sheet_name = 'Bigrams_step_2')
+worksheet = writer.sheets['Bigrams_step_2']
+worksheet.write(0, 1, "Bigrams",)
+worksheet.write(0, 2, "Probability")
+df5.to_excel(writer, startrow=0, startcol=0, sheet_name = 'Bigrams_no_spaces_step_2')
+worksheet = writer.sheets['Bigrams_no_spaces_step_2']
+worksheet.write(0, 1, "Bigrams",)
+worksheet.write(0, 2, "Probability")
 
 writer.save()
 
 #  ---------------------------------------------------second part---------------------------------------
-
 entropy_of_language = log2(33)  # takes value of H(0), 33 letters in alphabet
 # R = 1 - H(inf)/H(0)
 entropy_inf_letters = count_redundancy(letter_frequency_set1, entropy_of_language)  # for letters with space
 entropy_inf_letters_no_spaces = count_redundancy(letter_frequency_set2, entropy_of_language)  # only letters
 
-entropy_inf_bigrams = count_redundancy(bigrams_frequency_set1, entropy_of_language)  # same for bigrams
-entropy_inf_bigrams_no_spaces = count_redundancy(bigrams_frequency_set2, entropy_of_language)  # no space
+entropy_inf_bigrams = count_redundancy(bigrams_frequency_set1_1, entropy_of_language)  # same for bigrams
+entropy_inf_bigrams_no_spaces = count_redundancy(bigrams_frequency_set1_2, entropy_of_language)  # no space
 
-print("R:")
-print(entropy_inf_letters)
-print(entropy_inf_letters_no_spaces)
-print(entropy_inf_bigrams)
-print(entropy_inf_bigrams_no_spaces)
+entropy_inf_bigrams2 = count_redundancy(bigrams_frequency_set2_1, entropy_of_language)
+entropy_inf_bigrams_no_spaces2 = count_redundancy(bigrams_frequency_set2_2, entropy_of_language)
 
 
+print("---------------------------------------------------------------")
+print('H value (letters with spaces): ', count_entropy_value(letter_frequency_set1))
+print('H value (letters without spaces): ', count_entropy_value(letter_frequency_set2), '\n')
+print('H value (bigrams with spaces, step 1): ', count_entropy_value(bigrams_frequency_set1_1))
+print('H value (bigrams without spaces, step 1): ', count_entropy_value(bigrams_frequency_set1_2), '\n')
+print('H value (bigrams with spaces, step 2): ', count_entropy_value(bigrams_frequency_set2_1))
+print('H value (bigrams without spaces, step 2): ', count_entropy_value(bigrams_frequency_set2_2))
+print("---------------------------------------------------------------")
+print('R value (letters with spaces): ', entropy_inf_letters)
+print('R value (letters without spaces): ', entropy_inf_letters_no_spaces, '\n')
+print('R value (bigrams with spaces, step 1): ', entropy_inf_bigrams)
+print('R value (bigrams without spaces, step 1): ', entropy_inf_bigrams_no_spaces, '\n')
+print('R value (bigrams with spaces, step 2): ', entropy_inf_bigrams2)
+print('R value (bigrams without spaces, step 2): ', entropy_inf_bigrams_no_spaces2, '\n')
+print("---------------------------------------------------------------")
