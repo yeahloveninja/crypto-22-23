@@ -23,9 +23,17 @@ ns_text_file = text_file.replace(' ', '')
 # open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_space.txt', 'w').write(text_file)
 # open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_no_space.txt', 'w').write(ns_text_file)
 
+mono_text = Counter(text_file)
+mono_ns_text = Counter(ns_text_file)
 bigram = Counter([text_file[i:i + 2] for i in range(0, len(text_file) - 1)])
+bigram_ns = Counter([ns_text_file[i:i + 2] for i in range(0, len(text_file) - 1)])
+
 # print(bigram) 
+mn_df = pd.DataFrame(list(mono_text.items()), columns=['Монограма', 'к-сть.'])
+mnn_df = pd.DataFrame(list(mono_ns_text.items()), columns=['Монограма', 'к-сть.'])
 bg_df = pd.DataFrame(list(bigram.items()), columns=['Біграма', 'к-сть.'])
+bgn_df = pd.DataFrame(list(bigram_ns.items()), columns=['Біграма', 'к-сть.'])
+
 
 def l_freq(dict):
     l_sum = sum(dict.values()) 
@@ -49,8 +57,38 @@ bg_df['Частота'] = bigram.values()
 l_ent(bigram)
 bg_df['Ентропія'] = bigram.values()
 
-bg_df.to_csv('cp1/viernikova_fb-06_tovkach_fb-06_cp1/test.csv', index=False)
+bg_df.to_csv('cp1/viernikova_fb-06_tovkach_fb-06_cp1/bigram.csv', index=False)
 all_entropy = sum(bigram.values())/2
+print(f'Загальна ентропія: {all_entropy}')
+print(f'Надлишковість: {l_R(all_entropy)}')
+
+l_freq(mono_text)
+mn_df['Частота'] = mono_text.values()
+l_ent(mono_text)
+mn_df['Ентропія'] = mono_text.values()
+
+mn_df.to_csv('cp1/viernikova_fb-06_tovkach_fb-06_cp1/mono.csv', index=False)
+all_entropy = sum(mono_text.values())
+print(f'Загальна ентропія: {all_entropy}')
+print(f'Надлишковість: {l_R(all_entropy)}')
+
+l_freq(mono_ns_text)
+mnn_df['Частота'] = mono_ns_text.values()
+l_ent(mono_ns_text)
+mnn_df['Ентропія'] = mono_ns_text.values()
+
+mnn_df.to_csv('cp1/viernikova_fb-06_tovkach_fb-06_cp1/mono_ns.csv', index=False)
+all_entropy = sum(mono_ns_text.values())
+print(f'Загальна ентропія: {all_entropy}')
+print(f'Надлишковість: {l_R(all_entropy)}')
+
+l_freq(bigram_ns)
+bgn_df['Частота'] = bigram_ns.values()
+l_ent(bigram_ns)
+bgn_df['Ентропія'] = bigram_ns.values()
+
+bgn_df.to_csv('cp1/viernikova_fb-06_tovkach_fb-06_cp1/bigram_ns.csv', index=False)
+all_entropy = sum(bigram_ns.values())/2
 print(f'Загальна ентропія: {all_entropy}')
 print(f'Надлишковість: {l_R(all_entropy)}')
 
