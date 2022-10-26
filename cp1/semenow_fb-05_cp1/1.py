@@ -28,7 +28,7 @@ def find_bigram(text, counter):
     return bigrams, counter
 
 
-def no_cross_bigrams(text):
+def cross_bigrams(text):
     all_bigr, counter = find_bigram(text, 0)
     res = {}
     for i in all_bigr:
@@ -36,19 +36,17 @@ def no_cross_bigrams(text):
     return res
 
 
-def cross_bigrams(text):
-    text_first_letter = ""
-    text_second_letter = ""
-    for i in text[0::2]:
-        text_first_letter += i
-    for k in text[1::2]:
-        text_second_letter += k
-    text_first_letter, counter = find_bigram(text_first_letter, 0)
-    text_second_letter, counter = find_bigram(text_second_letter, counter)
-    dicts = (text_second_letter, text_first_letter)
-    res = Counter()
-    for k in dicts:
-        res.update(k)
+def no_cross_bigrams(text):
+    txt_lst = list(text)
+    res = []
+    i = 0
+    while i < len(txt_lst) - 1:
+        res.append(txt_lst[i] + txt_lst[i + 1])
+        i += 2
+    res = Counter(res)
+    counter = 0
+    for i in res.values():
+        counter += i
     for i in res:
         res[i] = float(res[i]/counter)
     return res
@@ -119,8 +117,8 @@ print(f"r1 in text without space {no_space_monograms_r}\n")
 
 print(f"h2 in text with space {space_bigrams_entropy}")
 print(f"r2 in text with space {space_bigrams_r}")
-print(f"no cross h2 in text with space {no_space_bigrams_entropy}")
-print(f"no cross r2 in text with space {no_space_bigrams_r}")
+print(f"no cross h2 in text with space {space_no_cross_bigrams_entropy}")
+print(f"no cross r2 in text with space {space_no_cross_bigrams_r}")
 print(f"h2 in text without space {no_space_bigrams_entropy}")
 print(f"r2 in text without space {no_space_bigrams_r}")
 print(f"no cross h2 in text without space {no_cross_no_space_bigrams_entropy}")
