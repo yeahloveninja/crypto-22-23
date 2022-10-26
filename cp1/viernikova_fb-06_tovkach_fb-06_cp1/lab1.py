@@ -4,7 +4,7 @@ import pandas as pd
 from math import log2
 
 # Спочатку відкриємо наш текст
-text_file = open('text/1.txt', 'r').read()
+text_file = open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1.txt', 'r').read()
 text_file = text_file.lower().replace('ъ', 'ь').replace('ё', "е").replace('\n',' ')
 
 alphabet = 'абвгдежзийклмнопрстуфхцчшщыьэюя '
@@ -21,8 +21,8 @@ while "  " in text_file:
 ns_text_file = text_file.replace(' ', '')
 
 # запишемо очищенні тести у файли
-open('text/1_space.txt', 'w').write(text_file)
-open('text/1_no_space.txt', 'w').write(ns_text_file)
+open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_space.txt', 'w').write(text_file)
+open('cp1/viernikova_fb-06_tovkach_fb-06_cp1/text/1_no_space.txt', 'w').write(ns_text_file)
 
 # робимо функцію де робимо все що необхідно в лабі
 def lab(text):
@@ -69,9 +69,9 @@ def lab(text):
     # тут записуємо у csv наші дані
     def write_df(df, name):
         if space == True:
-            df.to_csv(f'{name}_space.csv', index=False)
+            df.to_csv(f'cp1/viernikova_fb-06_tovkach_fb-06_cp1/{name}_space.csv', index=False)
         else:
-            df.to_csv(f'{name}_no_space.csv', index=False)
+            df.to_csv(f'cp1/viernikova_fb-06_tovkach_fb-06_cp1/{name}_no_space.csv', index=False)
     
     #створюємо датафрейми та словники з нашими значеннями буквами *значення для монограми отримуємо на початку функції 
     mono_df = pd.DataFrame(list(mono_text.items()), columns=["Буква","к-сть"])
