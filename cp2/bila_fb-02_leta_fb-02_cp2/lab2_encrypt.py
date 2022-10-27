@@ -48,12 +48,12 @@ def to_encrypt(txt, key):  # зашифровуємо текст ключами
         name.write(encrypted_data)
 
 
-def find_i(txt):
+def find_i(txt, alphabet):
     c = Counter()
     I = 0
     for line in txt:
         c += Counter(line)  # рахуємо скільки разів зустрічається кожна літера в тексті
-    for letter in al:
+    for letter in alphabet:
         I = I + c[letter] * (c[letter] - 1)
     I = I / (len(txt) * (len(txt) - 1))
     return I
@@ -65,20 +65,20 @@ to_encrypt(clean, key_4)
 to_encrypt(clean, key_5)
 to_encrypt(clean, key_20)
 
-find_i(clean)
+find_i(clean, al)
 
 with open("key_2_text.txt", encoding='utf8') as file1:
     key2 = file1.read()
-find_i(key2)
+find_i(key2, al)
 with open("key_3_text.txt", encoding='utf8') as file1:
     key3 = file1.read()
-find_i(key3)
+find_i(key3, al)
 with open("key_4_text.txt", encoding='utf8') as file1:
     key4 = file1.read()
-find_i(key4)
+find_i(key4, al)
 with open("key_5_text.txt", encoding='utf8') as file1:
     key5 = file1.read()
-find_i(key5)
+find_i(key5, al)
 with open("key_20_text.txt", encoding='utf8') as file1:
     key20 = file1.read()
-find_i(key20)
+find_i(key20, al)
