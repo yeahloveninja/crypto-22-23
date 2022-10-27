@@ -48,14 +48,14 @@ def entropy_bigr(txt, touch_point):
         distance -= 1
         #если иду с шагом два, отнимается 1
     bigr = []
-    for i in range(0, distance-1, 2-touch_point): #тут считается шаг
-        bigr.append(txt[i]+txt[i+1]) #склейка букв и добавляеться в биграмму
+    for i in range(0, distance-1, 2-touch_point): #проходимся с определенным шагом
+        bigr.append(txt[i]+txt[i+1]) #склейка букв и добавляется в биграмму
     count = len(bigr)
     frequency = Counter(bigr) #количество повторений элементов
     # print(frequency)
     for i in frequency:
-        frequency[i] /= count #частота делиться на встречаемость
-    result = sum(frequency [k] * math.log(frequency [k], 2) for k in frequency ) / (-2) #энтропия
+        frequency[i] /= count
+    result = sum(frequency [k] * math.log(frequency [k], 2) for k in frequency ) / (-2) #энтропия, на -2 бо минус перед ответом
     frequency = sorted(frequency .items(), key=lambda item: item[1], reverse=True) #сортируем и разворачиваем очередь
     for key, value in frequency :
         print(key, ':', value)
@@ -79,7 +79,7 @@ def entropy_lett(txt):
     return result
 
 
-print("H2 txt with probels without touch_points", entropy_bigr(probels, 0))
+print("H2 txt with probels without touch_points", entropy_bigr(probels, 0)) #задаем шаг и выводим
 print("H1 txt with probels with touch_points", entropy_bigr(probels, 1))
 print("H2 txt without probels without touch_points", entropy_bigr(say_no_to_probels, 0))
 print("H1 txt without probels with touch_points", entropy_bigr(say_no_to_probels, 1))
