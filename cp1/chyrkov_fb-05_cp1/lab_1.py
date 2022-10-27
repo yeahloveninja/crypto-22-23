@@ -1,4 +1,4 @@
-﻿import math
+import math
 
 text = open('text.txt', encoding="utf8").read() # відкриваю файл, та відразу записую весь текст в змінну
 
@@ -142,3 +142,4 @@ print (excess(bigrams_cross))
 print ('bigrams_cross_without_space')
 print (entropy_H2(bigrams_cross_without_space))
 print (excess(bigrams_cross_without_space))
+
