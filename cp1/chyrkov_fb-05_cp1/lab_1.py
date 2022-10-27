@@ -1,4 +1,4 @@
-﻿import math
+import math
 
 text = open('text.txt', encoding="utf8").read() # відкриваю файл, та відразу записую весь текст в змінну
 
@@ -65,9 +65,12 @@ def bigram_cross_frequency(space):
             letter_fusion += i 
             j = 1 # встановлюємо що перша буква додана
             continue # перестрибуваємо на наступну ітерацію бо поки в нас одна буква
-
-        if j == 1 and i != None: # беремо третю букву
+        if j == 1 and i != None:
+            j += 1
+            continue
+        if j == 2 and i != None: # беремо другу букву
             letter_fusion += i # додаємо її
+            j = 0
         else:
             break 
         len_text += 1
@@ -77,8 +80,7 @@ def bigram_cross_frequency(space):
         else:
             bigrams[letter_fusion] += 1 # у всіх інших випадках додаємо 1
 
-        letter_fusion = i
-        j = 1;
+        letter_fusion = ''
 
     for i in bigrams:
         bigrams[i] = bigrams[i]/len_text
@@ -114,7 +116,6 @@ letters_without_space = letter_frequency(1)
 bigrams = bigram_frequency(0)
 bigrams_without_space = bigram_frequency(1)
 bigrams_cross = bigram_cross_frequency(0)
-
 bigrams_cross_without_space = bigram_cross_frequency(1)
 
 
@@ -141,3 +142,4 @@ print (excess(bigrams_cross))
 print ('bigrams_cross_without_space')
 print (entropy_H2(bigrams_cross_without_space))
 print (excess(bigrams_cross_without_space))
+
