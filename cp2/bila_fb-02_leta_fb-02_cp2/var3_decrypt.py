@@ -5,7 +5,7 @@ from collections import Counter
 from lab2_encrypt import find_i
 from itertools import cycle
 
-with open("var31_2_text.txt", encoding='utf8') as file:
+with open("var3_text copy.txt", encoding='utf8') as file:
     file_to_decrypt = file.read()
 
 alphabet_without_spaces = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
@@ -38,7 +38,7 @@ def to_separate_blocks(txt, period):
 def blocks_index(txt, length):
     period = to_separate_blocks(txt, length)
     for i in range(0, len(period)):
-        i += find_i(period[i])
+        i += find_i(period[i], al)
     i /= len(period)
     return i
 
@@ -46,7 +46,7 @@ def blocks_index(txt, length):
 def total_index(arr):
     total = 0
     for element in arr:
-        total += find_i(element)
+        total += find_i(element, al)
     total /= len(arr)
     return total
 
@@ -58,7 +58,7 @@ def key_out(val, dictionary):
 
 
 def to_count_key_size(txt):
-    theoretical_i = 0.05751442686466821  # з частот першого комп. практикуму (0.05751442686466821)
+    theoretical_i = 0.05  # з частот першого комп. практикуму (0.05751442686466821)
     all_i = {}
     for k in range(2, 32):
         all_i[k] = total_index(to_separate_blocks(txt, k))
@@ -67,9 +67,9 @@ def to_count_key_size(txt):
     all_i_data.to_excel("indexes.xlsx")
     all_keys = []
     for exp_i in all_i.values():
-        if exp_i < theoretical_i:
+        if exp_i > theoretical_i:
             all_keys.append(exp_i)
-    key_size = key_out(max(all_keys), all_i)
+    key_size = key_out(min(all_keys), all_i)
     return key_size
 
 
@@ -120,7 +120,7 @@ def test(txt, key):
 #print(find_i(file_to_decrypt))
 
 print(to_count_key_size(file_to_decrypt))
-print(to_reveal_key(to_separate_blocks(file_to_decrypt, to_count_key_size(file_to_decrypt))))
+print(to_reveal_key(to_separate_blocks(file_to_decrypt, 14)))
 print(test(file_to_decrypt, 'экомаятникфуко'))
 #print(test(alphabet_without_spaces, 'б'))
 to_reveal_key(file_to_decrypt)
