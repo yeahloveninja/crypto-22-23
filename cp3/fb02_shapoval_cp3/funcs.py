@@ -146,17 +146,18 @@ def check_text(text: str) -> bool:
 
 
     if counter/max_score > 0.75:
-        print(counter)
+        #print(counter)
         return True
     else:
         return False
 
 
-def try_keys(ct: str):
+def try_keys(ct: str) -> tuple[int, int]:
     for a, b in gen_all_possible_keys(ct):
         ot = decrypt(ct, a, b)
         if (check_text(ot)):
             print(f"****    {a}, {b}    ****")
+            yield (a, b)
             
 
 
