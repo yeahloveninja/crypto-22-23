@@ -24,7 +24,7 @@ def IndexVidp(text): #індекс відповідності
     i = []
     for key in list(x.keys()):
         i.append(x[key]*(x[key]-1))
-    I = 1/(sum(x.values())*(sum(x.values())-1))*sum(i)
+    I = 1/(len(text)*(len(text)-1))*sum(i)
     return(I)
    
 
@@ -66,7 +66,7 @@ def IndVidpEachBl(text, r): #індекс відповідності для ко
     ind = 0
     for i in range(len(blocks)):
         ind = ind + IndexVidp(blocks[i])
-    ind = ind/len(blocks)
+    ind = ind/r
     return ind     
 
 def FindKluch(text, r, bukva): #визначаємо ключ
