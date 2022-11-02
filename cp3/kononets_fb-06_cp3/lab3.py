@@ -92,7 +92,7 @@ def decrypt_affine(my_text, key_array):     # дешифрування афін�
     return plaintext_str
 
 
-def solutions(system_of_equations):
+def solutions(system_of_equations):            # знаходимо корені системи рівнянь
     keys = []
     x1, x2, y1, y2 = convert(system_of_equations[0][0]), convert(system_of_equations[1][0]), \
                      convert(system_of_equations[0][1]), convert(system_of_equations[1][1])
