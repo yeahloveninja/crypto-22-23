@@ -1,6 +1,9 @@
 from collections import Counter
 from operator import itemgetter
+from math import log
 alphabet = 'абвгдежзийклмнопрстуфхцчшщьыэюя'
+exception = ['аы', 'аь', 'еэ', 'йь', 'оы', 'уы', 'уь', 'цэ', 'чщ', 'чэ', 'шщ', 'ьы', 'ыэ', 'яь', 'оь', 'ыь', 'еь', 'юь',
+             'эь', 'ць', 'хь', 'кь', 'йь', 'иь', 'гь', 'еы', 'эы', 'иы', 'яы', 'юы', 'ыы', 'ьь']
 
 
 def open_file(path_to_file):        # відкриваємо файл, читаємо текст
@@ -66,16 +69,18 @@ def convert(bigram):                # перевести біграму в її 
     return number
 
 
-def systems_of_equations(text):     # формування систем рівнянь
+def systems_of_equations(text):     # формування систем рівнянь на біграмах
     the_most_frequent_ru = ['ст', 'но', 'ен', 'то', 'на']
     the_most_frequent_text = bigram_frequency(text)
     bigrams, systems_equations = [], []
     for i in the_most_frequent_ru:
         for j in the_most_frequent_text:
-            bigrams.append((i, j))
+            bigrams.append((i, j))      # пара найч. біграма мови - кожна найчастіша біграма тексту
     for i in bigrams:
         for j in bigrams:
             if i == j or (j, i) in systems_equations:
+                continue
+            elif i[0] == j[0] or i[1] == j[1]:      # бо одна й та сама біграма не може одночасно переходити у дві
                 continue
             systems_equations.append((i, j))
     return systems_equations
@@ -96,10 +101,49 @@ def solutions(system_of_equations):            # знаходимо корені
     keys = []
     x1, x2, y1, y2 = convert(system_of_equations[0][0]), convert(system_of_equations[1][0]), \
                      convert(system_of_equations[0][1]), convert(system_of_equations[1][1])
-    a = modulo_equation(x1 - x2, y1 - y2, 31 ** 2)
+    # (('ст', 'цл'), ('ст', 'ял')) ст-ст цл-ял
+    a = modulo_equation(x1 - x2, y1 - y2, 31 ** 2)      # рівняння (2) з методички
     for i in a:
         if gcd(i, 31) != 1:
             continue
-        b = (y1 - i * x1) % 31 ** 2
-        keys.append((i, b))
+        b = (y1 - i * x1) % 31 ** 2             # відповідно знаючи a знаходимо відповідне b
+        keys.append((i, b))                     # отримуємо пари а, b
     return keys
+
+
+def to_find_keys(text):             # ймовірні ключі
+    arr_keys = []
+    bigram_systems = systems_of_equations(text)     # системи біграм
+    for i in bigram_systems:
+        solutions_of_systems = solutions(i)         # ключі для і-ої системи біграм
+        if len(solutions_of_systems) != 0:
+            for j in range(len(solutions_of_systems)):
+                # записую отримані пари ключів до arr_keys (якщо їх 1 або більше)
+                arr_keys.append(solutions_of_systems[j])
+    return arr_keys             # [(),(),()...]
+
+
+def entropy(my_text):                   # ентропія тексту
+    count_letters = Counter(my_text)
+    for i in count_letters:
+        count_letters[i] /= len(my_text)
+    result = -1 * sum(float(count_letters[i]) * log(count_letters[i], 2) for i in count_letters)
+    return result
+
+
+def except_values(arr):         # перевірка чи є в тексті біграми що не існують
+    c = []
+    for i in arr:
+        if i in c:
+            continue
+        for j in exception:
+            if i == j:
+                c.append(i)
+                break
+    if len(c) == 0:
+        return False
+    else:
+        return True
+
+
+
