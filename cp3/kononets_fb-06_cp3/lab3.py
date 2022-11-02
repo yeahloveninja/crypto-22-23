@@ -1,3 +1,5 @@
+from collections import Counter
+from operator import itemgetter
 alphabet = 'абвгдежзийклмнопрстуфхцчшщьыэюя'
 
 
@@ -48,3 +50,17 @@ def modulo_equation(int_a, int_b, int_n):           # рівняння за мо
                 array_x.append(array_x[-1] + int_n)
             return array_x
 
+
+def bigram_frequency(text):         # 5 найчастіших біграм тексту
+    arr_bigrams = []
+    for i in range(0, len(text) - 1, 2):
+        arr_bigrams.append(text[i:i + 2])
+    bigrams_count = Counter(arr_bigrams)
+    sorted_tuples = sorted(bigrams_count.items(), key=itemgetter(1), reverse=True)
+    sorted_dict = {k: v for k, v in sorted_tuples}
+    return list(sorted_dict.keys())[:5]
+
+
+def convert(bigram):                # перевести біграму в її числове значення
+    number = alphabet.index(bigram[0]) * 31 + alphabet.index(bigram[1])
+    return number
