@@ -64,3 +64,42 @@ def bigram_frequency(text):         # 5 найчастіших біграм те
 def convert(bigram):                # перевести біграму в її числове значення
     number = alphabet.index(bigram[0]) * 31 + alphabet.index(bigram[1])
     return number
+
+
+def systems_of_equations(text):     # формування систем рівнянь
+    the_most_frequent_ru = ['ст', 'но', 'ен', 'то', 'на']
+    the_most_frequent_text = bigram_frequency(text)
+    bigrams, systems_equations = [], []
+    for i in the_most_frequent_ru:
+        for j in the_most_frequent_text:
+            bigrams.append((i, j))
+    for i in bigrams:
+        for j in bigrams:
+            if i == j or (j, i) in systems_equations:
+                continue
+            systems_equations.append((i, j))
+    return systems_equations
+
+
+def decrypt_affine(my_text, key_array):     # дешифрування афінного шифру
+    arr_plaintext = []
+    a, b = key_array[0], key_array[1]
+    for i in range(0, len(my_text) - 1, 2):
+        x = (extended_euclid(a, 31 ** 2) * (convert(my_text[i:i + 2]) - b)) % (31 ** 2)  # рівняння дешифрування
+        arr_plaintext.append(alphabet[x // 31] + alphabet[x % 31])  # щоб знайти літери біграми (літера 1 буде
+        # результатом цілочисельного ділення на 31, а літера 2 результатом ділення за модулем 31)
+    plaintext_str = ''.join(i for i in arr_plaintext)
+    return plaintext_str
+
+
+def solutions(system_of_equations):
+    keys = []
+    x1, x2, y1, y2 = convert(system_of_equations[0][0]), convert(system_of_equations[1][0]), \
+                     convert(system_of_equations[0][1]), convert(system_of_equations[1][1])
+    a = modulo_equation(x1 - x2, y1 - y2, 31 ** 2)
+    for i in a:
+        if gcd(i, 31) != 1:
+            continue
+        b = (y1 - i * x1) % 31 ** 2
+        keys.append((i, b))
+    return keys
