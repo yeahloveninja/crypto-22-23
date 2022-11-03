@@ -3,7 +3,7 @@ from operator import itemgetter
 from math import log
 
 alphabet = 'абвгдежзийклмнопрстуфхцчшщьыэюя'
-exception = ['аы', 'аь', 'еэ', 'йь', 'оы', 'уы', 'уь', 'цэ', 'чщ', 'чэ', 'шщ', 'ьы', 'ыэ', 'яь', 'оь', 'ыь', 'еь', 'юь',
+exception = ['аы', 'аь', 'йь', 'оы', 'уы', 'уь', 'чщ', 'чэ', 'ьы', 'яь', 'оь', 'ыь', 'еь', 'юь',
              'эь', 'ць', 'хь', 'кь', 'йь', 'иь', 'гь', 'еы', 'эы', 'иы', 'яы', 'юы', 'ыы', 'ьь']
 
 
@@ -132,31 +132,25 @@ def entropy(my_text):  # ентропія тексту
     return result
 
 
-def except_values(arr):  # перевірка чи є в тексті біграми що не існують
-    c = []
-    for i in arr:
-        if i in c:
-            continue
-        for j in exception:
-            if i == j:
-                c.append(i)
-                break
-    if len(c) == 0:
-        return False
-    else:
-        return True
+def except_values(my_text):     # перевірка чи є у тексті неможливі біграми
+    x = 0
+    for i in exception:
+        if i in my_text:
+            x = 1
+            break
+    return x
 
 
 def keys_is_right(keys, enc_text):          # розпізнавач
     no_matches = "No matches :("
     for i in keys:
-        count = list(Counter(decrypt_affine(enc_text, i)).keys())
-        letters = list(dict(sorted(Counter(decrypt_affine(enc_text, i)).items(),
+        dec = decrypt_affine(ciphertext, i)
+        letters = list(dict(sorted(Counter(dec).items(),
                                    key=itemgetter(1), reverse=True)).keys())        # топ літер за спаданням зустрічі
         if letters[0] not in ['о', 'е']:            # якщо в тексті 1 літера топу не 'о' та не 'е', то skip
             continue
-        elif except_values(count):                  # якщо у тексті зустрілись неможливі біграми - skip
-            continue
+        elif except_values(dec) == 1:
+            continue                  # якщо у тексті зустрілись неможливі біграми - skip
         e = entropy(decrypt_affine(enc_text, i))
         if (e > 4.2) and (e < 4.5):         # якщо ентропія тексту від 4.2 до 4.5 - то повернути ключ
             # взагалі ентропія мови ~4,35
