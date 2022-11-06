@@ -48,6 +48,7 @@ def create_bigrams(alphabet):
 
 def count_bigram_frequency(text, crossed, bigrams_frequency_dict):
     frequency = {}
+    text_length = len(text)
     if crossed == 'Y':
         for i in range(len(text)-1):
             key = text[i] + text[i+1]
@@ -57,14 +58,14 @@ def count_bigram_frequency(text, crossed, bigrams_frequency_dict):
             frequency[key] = round(frequency[key], 8)
     else: # not crossed
         if len(text) % 2 == 1:
-            text -= 1
+            text_length -= 1
         for i in range(len(text)-1):
             if i % 2 == 1:
                 continue
             key = text[i] + text[i+1]
             bigrams_frequency_dict[key] += 1
         for key in bigrams_frequency_dict.keys():
-            frequency[key] = bigrams_frequency_dict[key] / (len(text) // 2)
+            frequency[key] = bigrams_frequency_dict[key] / (text_length // 2)
             frequency[key] = round(frequency[key], 8)
     return frequency
 
@@ -98,14 +99,43 @@ def make_excel_table(dict, table_name):
 text_with_spaces = prettify_text('text.txt', True)
 text_without_spaces = prettify_text('text.txt', False)
 
+# letters including space
+letters_frequency_with_space = count_letters_frequency(alphabet_with_spaces, text_with_spaces)
+letters_E_with_space = calculate_entropy(letters_frequency_with_space, 1)
+letters_R_with_space = calculate_redundancy(alphabet_with_spaces, letters_E_with_space)
+print('letters with space: E = ', letters_E_with_space, ', R = ', letters_R_with_space)
+make_excel_table(letters_frequency_with_space, 'letters_frequency_with_space.xlsx')
+# letters not including space
+letters_frequency_without_space = count_letters_frequency(alphabet_without_spaces, text_without_spaces)
+letters_E_without_space = calculate_entropy(letters_frequency_without_space, 1)
+letters_R_without_space = calculate_redundancy(alphabet_without_spaces, letters_E_without_space)
+print('letters without space: E = ', letters_E_without_space, ', R = ', letters_R_without_space)
+make_excel_table(letters_frequency_without_space, 'letters_frequency_without_space.xlsx')
+
+# bigrams including spaces
+# not crossed
 bigram_frequency_with_space = count_bigram_frequency(text_with_spaces, 'N', create_bigrams(alphabet_with_spaces))
-print(bigram_frequency_with_space)
-bigram_frequency_with_space_E = calculate_entropy(bigram_frequency_with_space, 1)
+bigram_frequency_with_space_E = calculate_entropy(bigram_frequency_with_space, 2)
 bigram_frequency_with_space_R = calculate_redundancy(alphabet_with_spaces, bigram_frequency_with_space_E)
 print('not crossed bigram with space: E = ', bigram_frequency_with_space_E, ', R = ', bigram_frequency_with_space_R)
-
+make_excel_table(bigram_frequency_with_space, 'bigram_frequency_with_space.xlsx')
+# crossed
 crossed_bigram_frequency_with_space = count_bigram_frequency(text_with_spaces, 'Y', create_bigrams(alphabet_with_spaces))
-print(crossed_bigram_frequency_with_space)
 crossed_bigram_frequency_with_space_E = calculate_entropy(crossed_bigram_frequency_with_space, 2)
 crossed_bigram_frequency_with_space_R = calculate_redundancy(alphabet_with_spaces, crossed_bigram_frequency_with_space_E)
 print('crossed bigram with space: E = ', crossed_bigram_frequency_with_space_E, ', R = ', crossed_bigram_frequency_with_space_R)
+make_excel_table(crossed_bigram_frequency_with_space, 'crossed_bigram_frequency_with_space.xlsx')
+
+# bigrams not including spaces
+# not crossed
+bigram_frequency_without_space = count_bigram_frequency(text_without_spaces, 'N', create_bigrams(alphabet_without_spaces))
+bigram_frequency_without_space_E = calculate_entropy(bigram_frequency_without_space, 2)
+bigram_frequency_without_space_R = calculate_redundancy(alphabet_without_spaces, bigram_frequency_without_space_E)
+print('not crossed bigram with space: E = ', bigram_frequency_without_space_E, ', R = ', bigram_frequency_without_space_R)
+make_excel_table(bigram_frequency_without_space, 'bigram_frequency_without_space.xlsx')
+# crossed 
+crossed_bigram_frequency_without_space = count_bigram_frequency(text_without_spaces, 'Y', create_bigrams(alphabet_without_spaces))
+crossed_bigram_frequency_without_space_E = calculate_entropy(crossed_bigram_frequency_without_space, 2)
+crossed_bigram_frequency_without_space_R = calculate_redundancy(alphabet_without_spaces, crossed_bigram_frequency_without_space_E)
+print('crossed bigram with space: E = ', crossed_bigram_frequency_without_space_E, ', R = ', crossed_bigram_frequency_without_space_R)
+make_excel_table(crossed_bigram_frequency_without_space, 'crossed_bigram_frequency_without_space.xlsx')
