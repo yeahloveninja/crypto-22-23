@@ -46,7 +46,7 @@ def indexes_blocks(target_text: str, length: int) -> int:
     return start_index
 
 
-def creation_key(target_text: str, size: int, target_letter: str):
+def creation_key(target_text: str, size: int, target_letter: str) -> str:
     our_block = split_blocks(target_text, size)
     final_key = ""
     for element in range(len(our_block)):
@@ -68,36 +68,21 @@ for key in keys:
     encodeText = vigenere(our_text, key, True)
     data[len(key)] = [key + ' : ' + ''.join(encodeText)]
 
-#
-# print("\nCoincidence index start = ", coincidence_index(our_text), "\n")
-#
-# for key in keys:
-#     print("Key length = ", len(key))
-#     final_text = vigenere(our_text, key, True)
-#     print("Encoded text: ", final_text)
-#     print("Decoded text: ", vigenere(final_text, key, False))
-#     print("Coincidence index: ", coincidence_index(final_text), "\n")
-#
-# for i in range(1, len(alpha) + 1):
-#     if indexes_blocks(new_text, i) > 0.04:
-#         print(str(i), str(indexes_blocks(new_text, i)))
 
-# for letter in 'оеа':
-#     print(creation_key(new_text, 17, letter))
-    # print(vigenere(new_text, creation_key(new_text, 17, letter), False))
-counter = 1
-now_text = ''
-sub_counter = 1
-print('галогенезразличия')
-for i in vigenere(new_text, 'ралощенезразличия', False):
-    if counter == 18:
-        now_text += '\n'
-        sub_counter += 1
-        counter = 1
-    now_text += i
-    counter += 1
-    if sub_counter == 6:
-        break
+print("\nCoincidence index start = ", coincidence_index(our_text), "\n")
 
-print(now_text)
-# ресинтезразличия
+for key in keys:
+    print("Key length = ", len(key))
+    final_text = vigenere(our_text, key, True)
+    print("Encoded text: ", final_text)
+    print("Decoded text: ", vigenere(final_text, key, False))
+    print("Coincidence index: ", coincidence_index(final_text), "\n")
+
+for i in range(1, len(alpha) + 1):
+    if indexes_blocks(new_text, i) > 0.04:
+        print(str(i), str(indexes_blocks(new_text, i)))
+
+for letter in 'оеа':
+    print(creation_key(new_text, 17, letter))
+
+print(vigenere(new_text, 'родинабезразличия', False))
