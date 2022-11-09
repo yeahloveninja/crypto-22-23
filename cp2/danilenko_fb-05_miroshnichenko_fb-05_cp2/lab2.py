@@ -30,8 +30,8 @@ def coincidence_index(target_text: str) -> float:
 
 def split_blocks(target_text: str, length: int) -> list:
     list_block = []
-    for i in range(length):
-        list_block.append(target_text[i::length])
+    for element in range(length):
+        list_block.append(target_text[element::length])
     return list_block
 
 
@@ -45,6 +45,15 @@ def indexes_blocks(target_text: str, length: int) -> int:
 
     return start_index
 
+
+def creation_key(target_text: str, size: int, target_letter: str):
+    our_block = split_blocks(target_text, size)
+    final_key = ""
+    for element in range(len(our_block)):
+        frequent = max(our_block[element], key=lambda count_: our_block[element].count(count_))
+        final_key += alpha[(alpha.index(frequent) - alpha.index(target_letter)) % len(alpha)]
+
+    return final_key
 
 
 data = {}
@@ -69,7 +78,12 @@ for key in keys:
     print("Decoded text: ", vigenere(final_text, key, False))
     print("Coincidence index: ", coincidence_index(final_text), "\n")
 
-for i in range(1, len(alpha)):
-    print(str(i), str(indexes_blocks(new_text,i)))
+for i in range(1, len(alpha) + 1):
+    if indexes_blocks(new_text, i) > 0.04:
+        print(str(i), str(indexes_blocks(new_text, i)))
 
-
+for letter in 'оеа':
+    print(creation_key(new_text, 17, letter))
+    # print(vigenere(new_text, creation_key(new_text, 17, letter), False))
+print(vigenere(new_text, 'педогенезразличия', False))
+# ресинтезразличия
