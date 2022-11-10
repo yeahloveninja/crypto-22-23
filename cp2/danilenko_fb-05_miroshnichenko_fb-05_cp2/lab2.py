@@ -50,7 +50,12 @@ def creation_key(target_text: str, size: int, target_letter: str) -> str:
     our_block = split_blocks(target_text, size)
     final_key = ""
     for element in range(len(our_block)):
-        frequent = max(our_block[element], key=lambda count_: our_block[element].count(count_))
+        frequent_count = 0
+        frequent = ''
+        for block_element in our_block[element]:
+            if frequent_count < our_block[element].count(block_element):
+                frequent_count = our_block[element].count(block_element)
+                frequent = block_element
         final_key += alpha[(alpha.index(frequent) - alpha.index(target_letter)) % len(alpha)]
 
     return final_key
@@ -79,8 +84,7 @@ for key in keys:
     print("Coincidence index: ", coincidence_index(final_text), "\n")
 
 for i in range(1, len(alpha) + 1):
-    if indexes_blocks(new_text, i) > 0.04:
-        print(str(i), str(indexes_blocks(new_text, i)))
+    print(str(i), str(indexes_blocks(new_text, i)))
 
 for letter in 'оеа':
     print(creation_key(new_text, 17, letter))
