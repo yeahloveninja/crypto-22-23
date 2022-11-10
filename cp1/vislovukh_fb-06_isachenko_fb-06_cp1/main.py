@@ -5,8 +5,10 @@ sort_rules = r'[1-9.,"\'-?:–!;a-z»A-Z„n{}#°—’’%` +\f\r\v\0^\ufeff@�
 
 
 def open_sort(file, spaces):
-    text = open(file, "r", encoding="utf-8").read()
-    return re.sub(sort_rules, '', text).replace(" ", "`").lower() if spaces else re.sub(sort_rules, '', text).replace(
+    text = open(file, "r").read()
+    return re.sub(sort_rules, '', text).replace("  ", " ").replace(" ", "`").lower() if spaces else re.sub(sort_rules,
+                                                                                                           '',
+                                                                                                           text).replace(
         " ", "").lower()
 
 
@@ -35,13 +37,12 @@ def entropy(text, n):
         h += -text[letter] * log2(text[letter])
     h = h * 1 / n
 
-    return round(h, 5)
+    return h
 
 
 def bigrams_counter(text, step):
-    text = text.replace(" ", "_")
     counter = {}
-    slide_bigrmas = [text[i:i + 2] for i in range(0, len(text), step)]
+    slide_bigrmas = [text[i:i + 2] for i in range(0, len(text) - 1, step)]
     for bigram in slide_bigrmas:
         counter.setdefault(bigram, 0)
         counter[bigram] += 1
@@ -61,7 +62,7 @@ def sort_dict(dictionary):
 
 
 def calc_R(h, atphabet):
-    return round(1 - h / log2(atphabet), 5)
+    return 1 - h / log2(atphabet)
 
 
 alphabet_nospace = 33
@@ -70,35 +71,38 @@ alphabet_space = 34
 text_with_spaces = open_sort("some_text.txt", True)
 text_with_no_spaces = open_sort("some_text.txt", False)
 
-char_frequency_spaces = sort_dict(char_frequency(char_counter(text_with_spaces)))
-char_frequency_no_spaces=sort_dict(char_frequency(char_counter(text_with_no_spaces)))
-# entropy and R for H1
-print("h1 with space: " + str(entropy(char_frequency_spaces, 1)))
-print("R for h1 with space: " + str(calc_R(entropy(char_frequency_spaces, 1), alphabet_space)), '\n')
+char_frequency_spaces = char_frequency(char_counter(text_with_spaces))
 
-print("h1 without space: " + str(entropy(char_frequency_no_spaces, 1)))
+# entropy and R for H1
+
+print("h1 with space: ", entropy(char_frequency_spaces, 1))
+print("R for h1 with space: ", calc_R(entropy(char_frequency_spaces, 1), alphabet_space), '\n')
+char_frequency_no_spaces = char_frequency(char_counter(text_with_no_spaces))
+print("h1 without space: ", entropy(char_frequency_no_spaces, 1))
 print(
-    "R for h1 without space: " + str(calc_R(entropy(char_frequency_no_spaces, 1), alphabet_nospace)), '\n')
+    "R for h1 without space: ", calc_R(entropy(char_frequency_no_spaces, 1), alphabet_nospace), '\n')
 print("====================================================================", "\n")
 # entropy and R for H2
-# with intersection
-slide_bigrmas = sort_dict(char_frequency(bigrams_counter(text_with_spaces, 1)))
-print("h2 with space(slide): " + str(entropy(slide_bigrmas, 2)))
-print("R for h2 with space(slide): " + str(calc_R(entropy(slide_bigrmas, 2), alphabet_space)), '\n')
 
-slide_with_no_spaces = sort_dict(char_frequency(bigrams_counter(text_with_no_spaces, 1)))
-print("h2 without space(slide_with_no_spaces): " + str(entropy(slide_with_no_spaces, 2)))
-print("R for h2 without space(slide_with_no_spaces): " + str(calc_R(entropy(slide_with_no_spaces, 2), alphabet_nospace)), '\n')
+# з перетином з пробілами
+slide_bigrmas = char_frequency(bigrams_counter(text_with_spaces, 1))
+print("h2 with space с перетином: ", entropy(slide_bigrmas, 2))
+print("R for h2 with space с перетином: ", calc_R(entropy(slide_bigrmas, 2), alphabet_space), '\n')
+# з перетином без пробілів
+slide_with_no_spaces = char_frequency(bigrams_counter(text_with_no_spaces, 1))
+print("h2 without space с перетином: ", entropy(slide_with_no_spaces, 2))
+print(
+    "R for h2 without space с перетином: ", calc_R(entropy(slide_with_no_spaces, 2), alphabet_nospace), '\n')
+# без перетину з пробілами
+block_bigrams = char_frequency(bigrams_counter(text_with_spaces, 2))
+print("h2 with space без перетину: ", entropy(block_bigrams, 2))
+print("R for h2 with space без перетину: ", calc_R(entropy(block_bigrams, 2), alphabet_space), '\n')
 
-# without intersection
-block_bigrams = sort_dict(char_frequency(bigrams_counter(text_with_spaces, 2)))
-print("h2 with space(block): " + str(entropy(block_bigrams, 2)))
-print("R for h2 with space (block): " + str(calc_R(entropy(block_bigrams, 2), alphabet_space)), '\n')
-
-block_with_no_spaces = sort_dict(char_frequency(bigrams_counter(text_with_no_spaces, 2)))
-print("h2 without space(block_with_no_spaces): " + str(entropy(block_with_no_spaces, 2)))
-print("R for h2 without space(block_with_no_spaces): " + str(calc_R(entropy(block_with_no_spaces, 2), alphabet_nospace)))
-# print(char_frequency_spaces)
+# без перетину без пробелов
+block_with_no_spaces = char_frequency(bigrams_counter(text_with_no_spaces, 2))
+print("h2 without space без перетину: ", entropy(block_with_no_spaces, 2))
+print(
+    "R for h2 without space без перетину: ", calc_R(entropy(block_with_no_spaces, 2), alphabet_nospace))
 with open("char_frequency.txt", 'w', encoding='utf-8') as f:
     for key, value in char_frequency_spaces.items():
         f.write('%s : %s\n' % (key, value))
