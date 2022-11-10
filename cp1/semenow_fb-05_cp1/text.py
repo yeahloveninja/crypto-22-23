@@ -1,4 +1,5 @@
-txt = open('Havelok_Renegat.487727.txt', 'r', encoding='utf=8').read()
+import re
+txt = open('Havelok_Renegat.txt', 'r', encoding='utf=8').read()
 
 
 def create_txt(text):
@@ -7,8 +8,9 @@ def create_txt(text):
     for i in text_one:
         if i.isalpha():
             text_write += i
-        elif i == '_':
+        elif i == '_' or i == '__':
             text_write += '_'
+    text_write = re.sub(r'_+', '_', text_write)
     with open("2.txt", 'w') as file:
         file.write(text_write)
     text_write = text_write.replace('_', '')
