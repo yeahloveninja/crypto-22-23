@@ -17,4 +17,16 @@ def inverse_mod(a, m):
         print("Inverse doesn't exist")
         return
 
-print(inverse_mod(18, 25))
+# ax = b mod n 
+def solve_mod_eq(a, b, n):
+    d = ext_gcd(a, n)[0]
+    if d == 1:
+        return (inverse_mod(a, n) * b) % n
+    elif d > 1:
+        if b % d != 0:
+            return 
+        else:
+            a, b, n = a // d, b // d, n // d
+            root = solve_mod_eq(a, b, n)
+            return [root + (i * n) for i in range(d)]
+
