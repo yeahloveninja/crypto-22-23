@@ -139,7 +139,7 @@ text = filter_text(text)
 
 # [(654, 777)]
 checked_keys = check_keys(text, get_possible_keys(text))
-
+print(checked_keys)
 open_text = affine_decrypt(text, checked_keys[0])
 print(open_text[:100])
 # with open("open_text.txt", "w") as w:
