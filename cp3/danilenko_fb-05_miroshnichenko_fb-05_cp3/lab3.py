@@ -1,7 +1,9 @@
 from math import gcd
 
-ALPHA = 'àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ'
-BI_GRAMS_TOP = ('ñò', 'íî', 'òî', 'íà', 'åí')
+ALPHA = 'Ð°Ð±Ð²Ð³Ð´ÐµÐ¶Ð·Ð¸Ð¹ÐºÐ»Ð¼Ð½Ð¾Ð¿Ñ€ÑÑ‚ÑƒÑ„Ñ…Ñ†Ñ‡ÑˆÑ‰ÑŠÑ‹ÑŒÑÑŽÑ'
+BI_GRAMS_TOP = ('ÑÑ‚', 'Ð½Ð¾', 'Ñ‚Ð¾', 'Ð½Ð°', 'ÐµÐ½')
+
+text_13 = open("13.txt", 'r').read()
 
 
 def extended_euclid(first_num: int, second_num: int) -> (int, int, int):
@@ -50,4 +52,13 @@ def find_ngram(target_text: str):
     for ngram in ngram_dict:
         ngram_dict[ngram] = round(ngram_dict[ngram]/total_count, 6)
 
-    return ngram_dict
+    bi_grams_sort = {}
+
+    bi_grams_keys = sorted(ngram_dict, key=ngram_dict.get)
+
+    for num in bi_grams_keys:
+        bi_grams_sort[num] = ngram_dict[num]
+
+    sorted_bigramms = dict(reversed(list(bi_grams_sort.items())))
+
+    return list(sorted_bigramms)[:5]
