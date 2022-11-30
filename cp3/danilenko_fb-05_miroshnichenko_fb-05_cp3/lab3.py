@@ -31,18 +31,31 @@ def solve_linear_comparison(first_num: int, second_num: int, mod: int) -> list:
     return roots
 
 
-def find_ngram(target_text: str):
-    full_list = []
-    for i in range(0, len(target_text) - 2, 2):
-        full_list.append(target_text[i] + target_text[i + 1])
-    bi_grams_dict = {}
-    for i in all_bi_grams:
-        bi_grams_dict[i] = full_list.count(i)/(2 * len(full_list))
-    final = []
-    sorted_bi_grams = list(sorted(bi_grams_dict.items(), key=lambda item: item[1], reverse=True))
-    for i in range(5):
-        final.append(sorted_bi_grams[i][0])
-    return final
+def find_ngram(target_text: str) -> list:
+    total_count = 0
+    ngram_dict = {}
+    counter = 1
+    target_text = list(target_text)
+    dictionary_bi_gram_sort = {}
+    for ne_i_7 in range(len(target_text)):
+        if counter % 2 == 0:
+            current_gram = str(target_text[ne_i_7-1]) + str(target_text[ne_i_7])
+            if current_gram in ngram_dict:
+                ngram_dict[current_gram] += 1
+                total_count += 1
+            else:
+                ngram_dict[current_gram] = 1
+                total_count += 1
+        counter += 1
+    for ngram in ngram_dict:
+        ngram_dict[ngram] = round(ngram_dict[ngram]/total_count, 6)
+
+    keys_sort = sorted(ngram_dict, key=ngram_dict.get)
+    for i in keys_sort:
+        dictionary_bi_gram_sort[i] = ngram_dict[i]
+
+    sorted_bi_gram = list(reversed(list(dictionary_bi_gram_sort.keys())))
+    return sorted_bi_gram[:5]
 
 
 def bi_gram_to_num(bi_gram: str) -> int:
@@ -122,3 +135,4 @@ for k in keys:
         result = final_text
 
 print(result)
+
