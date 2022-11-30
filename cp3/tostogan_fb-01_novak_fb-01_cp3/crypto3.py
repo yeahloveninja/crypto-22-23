@@ -1,4 +1,5 @@
 import collections
+import numpy as np
 
 with open("/home/kali/cr3/04.txt", 'r', encoding='utf-8') as ofile:
 	note = ofile.read()
@@ -75,6 +76,7 @@ def index_tobg(n): #переведення індексу в біграму
 
 pb = frequency(note)
 
+
 def all_bg(): #всі можливі пари біграм
     pary = []
     for i in pb:
@@ -89,13 +91,14 @@ def all_bg(): #всі можливі пари біграм
 
 def kluchi(bigrams): #всі можливі ключі
     kluch=[]
-   # print(bigrams)
+    #d=list()
+    #print(bigrams)
     for i in bigrams:
         y1, x1 = bg_index(i[0][0]), bg_index(i[0][1]) 
         y2, x2 = bg_index(i[1][0]), bg_index(i[1][1])
         #print(y1, x1, y2, x2)
         a = rivne((x2 - x1), (y2 - y1), pow(len(symbols),2))
-        #print(a)
+        #d.append(a)
         if a == -1 :
             continue
         for i in a:
@@ -104,6 +107,7 @@ def kluchi(bigrams): #всі можливі ключі
                     continue
                 kluch.append([int(i), int(b)])    
     #print(kluch)
+    #print(np.unique(d))
     return kluch
 
 
@@ -127,9 +131,14 @@ def perevirka(text):
 
 	
 print('------------------------------------*Реалізація*------------------------------------')
+print(pb)
 keys = kluchi(all_bg())
+r=[]
+[r.append(x) for x in keys if x not in r]
+#print(r)
+print("Amount of keys:",len(r))
 print("-------------------*Keys*--------------------")
-for k in keys:
+for k in r:
     vt = rozshyfr(note, k[0], k[1])
     if perevirka(vt):
         print(str(k))
@@ -137,5 +146,7 @@ for k in keys:
 print("-------------------*Text*--------------------")
 print(rozshyfr(note, 390, 10))
 
+
+    
 
 
