@@ -2,7 +2,7 @@ from collections import Counter
 from itertools import combinations
 import re
 import operator
-
+from itertools import permutations
 
 # Ф-ція розширеного алгоритму Евкліда
 def evklidExtended(a, b):
@@ -11,7 +11,7 @@ def evklidExtended(a, b):
     gcd, x0, y0 = evklidExtended(b % a, a)
     x = y0 - (b // a) * x0
     y = x0
-    return gcd, x, y  # gcd - НСД(a, b), x - коефіцієнт перед a, y - коефіцієнт перед b
+    return [gcd, x, y]  # gcd - НСД(a, b), x - коефіцієнт перед a, y - коефіцієнт перед b
 
 
 # Ф-ція для знаходження оберненого елементу
@@ -107,18 +107,19 @@ def decryption(text, a, b):
 
 
 def attackFun(someText):
-    # bigrams = makeBigrams(text)
-
     popularRus = []
-    for bigram in ['ст', 'но', 'то', 'на', 'ен']:
+    for bigram in ['то', 'ст', 'не', 'на', 'ос', 'от', 'ен']:
         popularRus.append(charToInt(bigram[0]) * 31 + charToInt(bigram[1]))
+    #print(popularRus)
 
     popularRusEncrypt = []
     for bigram in coupleBigram(someText):
         popularRusEncrypt.append(charToInt(bigram[0]) * 31 + charToInt(bigram[1]))
+    #print(popularRusEncrypt)
 
     xCombin = list(combinations(popularRus, 2))  # кортежі len = 2, у відсортованому порядку, без повторюваних елементів
     yCombin = list(combinations(popularRusEncrypt, 2))
+    keys = []
 
     for yCouple in yCombin:
         y1 = yCouple[0]
@@ -130,11 +131,13 @@ def attackFun(someText):
             x3 = (x1 - x2) % (31 * 31)
 
             a = linearEquation(x3, y3, 31 * 31)
-            if a != -1:
+            if a!= -1:
                 b = (y1 - a * x1) % (31 * 31)
+                keyList = a,b
+                keys.append(keyList)     
+    #print(keys)
                 if checkLanguage(decryption(someText, a, b)) == 1:
-                    return [a, b]
-
+                    return [a, b] 
 
 file = open(r"D:\5 semestr\crypto\labs\crypto-22-23\cp3\sotnikova_fb-01_strukalo_fb-01_cp3\variant3.txt", mode="r", encoding="utf-8")
 # file = open(r"E:\_svv_92\KPI\V - Семестер\Крипта\Lab_3\variant3.txt", mode="r", encoding="utf-8")
@@ -153,7 +156,3 @@ if len(key) == 2:
     print('\n-------------------Дешифрований текст-------------------\n' + decrypt)
 else:
     print('\nТак вийшло, що ключ ми не змогли знайти.')
-
-
-decrypt = decryption(variant3, 199, 700)
-print('\n-------------------Дешифрований текст-------------------\n' + decrypt)
