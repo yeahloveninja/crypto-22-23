@@ -62,6 +62,7 @@ def r_calculate(h, count):
     ans = 1 - (h/math.log2(count))
     return ans
 
+
 monogram = 1
 bigram = 2
 
