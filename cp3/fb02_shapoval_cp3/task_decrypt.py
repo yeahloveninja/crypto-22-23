@@ -1,4 +1,3 @@
-from queue import PriorityQueue
 from funcs import *
 
 
@@ -12,7 +11,6 @@ for a, b in try_keys(ct):
 
 
 
-
-#with (open(f"OText.txt", mode='w+', encoding="utf8") as f_out):
-#    f_out.write(ot)
+with (open(f"OText.txt", mode='w+', encoding="utf8") as f_out):
+    f_out.write(ot)
 

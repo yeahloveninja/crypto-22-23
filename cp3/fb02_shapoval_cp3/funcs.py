@@ -4,11 +4,15 @@ alp: str = "абвгдежзийклмнопрстуфхцчшщьыэюя"
 alp_len: int = len(alp)
 alp_ords: dict[str, int] = {alp[i]: i for i in range(alp_len)}
 
+
+
+# Disclaimer: It is better to have freqs for each bgr, but common min freq also seems to be OK
+
 # >= 0.007388 in mein kampf (>= 10k)
 mc_bgrs: list[str] = ['ст', 'но', 'ен', 'то', 'на', 'ни', 'ос', 'ов', 'ро', 'пр', 'ра', 'ко', 'во', 'по', 'не', 'ре', 'ес', 'ан', 'го', 'ти', 'от', 'ть', 'ит', 'ер', 'од', 'ли']
 # <= 0.000010 in mein kampf ( <= 24 pcs )
 lc_bgrs: list[str] = ['бж', 'жп', 'жс', 'фы', 'эс', 'гт', 'нж', 'нш', 'бш', 'жч', 'пв', 'тш', 'жр', 'нх', 'рф', 'чо', 'гш', 'цл', 'пб', 'пч', 'фг', 'цм', 'вю', 'нл', 'шм', 'ьщ', 'юш', 'гэ', 'жв', 'кш', 'юх', 'бз', 'жг', 'лф', 'шп', 'шс', 'гз', 'цг', 'цз', 'шб', 'лх', 'лш', 'рщ', 'цт', 'цэ', 'эр', 'бб', 'жт', 'мю', 'шр', 'гг', 'зю', 'кх', 'пд', 'чд', 'эш', 'бп', 'бт', 'дф', 'дю', 'зф', 'зх', 'пф', 'тю', 'ыщ', 'жм', 'жэ', 'кя', 'фю', 'цр', 'шю', 'цч', 'чп', 'чс', 'бг', 'бч', 'гц', 'жж', 'пм', 'фь', 'хю', 'чм', 'эв', 'йю', 'пг', 'пэ', 'фв', 'фм', 'фн', 'шд', 'жз', 'йщ', 'лц', 'лщ', 'мщ', 'пш', 'цх', 'цц', 'цш', 'эд', 'бф', 'кь', 'кю', 'фд', 'фп', 'фч', 'фэ', 'хь', 'цф', 'чб', 'чч', 'чэ', 'шг', 'шф', 'шц', 'шэ', 'эб', 'эз', 'эх', 'бц', 'гж', 'гф', 'гя', 'жл', 'жц', 'кы', 'пж', 'пз', 'сй', 'фб', 'фк', 'фх', 'цж', 'ця', 'чг', 'чз', 'чф', 'шз', 'шх', 'щк', 'щп', 'ыю', 'эй', 'эу', 'юй']
-# 0 occurences in mein kampf
+# 0 occurrences in mein kampf
 forbidden_bgrs: list[str] = ['аы', 'аь', 'бй', 'вй', 'гй', 'гх', 'гщ', 'гы', 'гь', 'гю', 'дй', 'дщ', 'еы', 'еь', 'жй', 'жф', 'жх', 'жш', 'жщ', 'жы', 'жю', 'жя', 'зй', 'зщ', 'иы', 'иь', 'йй', 'йы', 'йь', 'кй', 'кщ', 'лй', 'мй', 'нй', 'оы', 'оь', 'пй', 'пх', 'пщ', 'пю', 'рй', 'сщ', 'тй', 'уы', 'уь', 'фж', 'фз', 'фй', 'фц', 'фш', 'фщ', 'фя', 'хй', 'хщ', 'хы', 'цй', 'цщ', 'ць', 'цю', 'чж', 'чй', 'чх', 'чц', 'чщ', 'чы', 'чю', 'чя', 'шж', 'шй', 'шч', 'шш', 'шщ', 'шы', 'шя', 'щб', 'щв', 'щг', 'щд', 'щж', 'щз', 'щй', 'щл', 'щм', 'що', 'щс', 'щт', 'щф', 'щх', 'щц', 'щч', 'щш', 'щщ', 'щы', 'щэ', 'щю', 'щя', 'ыы', 'ыь', 'ьй', 'ьы', 'ьь', 'эа', 'эе', 'эж', 'эи', 'эо', 'эц', 'эч', 'эщ', 'эы', 'эь', 'ээ', 'эю', 'эя', 'юы', 'юь', 'яы', 'яь']
 
 
@@ -75,7 +79,7 @@ def sort_dict(bgs: dict[str, int], dsc: bool = True) -> dict[str, int]:
     return dict(sorted(bgs.items(), key=lambda i: int(i[1]), reverse=dsc))
 
 
-
+# gen pairs of most common OT bgrs and CT bgrs
 def gen_all_possible_keys(ct: str, top_n_ct: int = 5, top_n_ot: int = 5) -> tuple[int, int]:
     ct_bgrs_seq = sort_dict(count_ngrs_seq(ct, 2))
     top_bgrs_ct: list[str] = list(ct_bgrs_seq.keys())[0:top_n_ct]
@@ -107,6 +111,7 @@ def gen_all_possible_keys(ct: str, top_n_ct: int = 5, top_n_ot: int = 5) -> tupl
                         yield s
 
 
+# convert CT str bgr to int code; OT bgr code = a⁻¹ * (CT_bgr - b) mod m²
 def decrypt_bgr(bgr_ct: str, a: int, b: int, alp: str = alp) -> str:
     m2: int = len(alp)**2
     ngr_ct_code = ngr_to_int(bgr_ct)
@@ -115,6 +120,7 @@ def decrypt_bgr(bgr_ct: str, a: int, b: int, alp: str = alp) -> str:
     return int_to_ngr(ngr_ot_code, 2)
 
 
+# split text in bgrs and decrypt each of them
 def decrypt(ct: str, a: int, b: int, n: int = 2, alp: int = alp) -> str:
     m2: int = len(alp)**2
     ot: str = ""
@@ -123,14 +129,20 @@ def decrypt(ct: str, a: int, b: int, n: int = 2, alp: int = alp) -> str:
     return ot
 
 
+# check if decrypted text seems to be valid.
 def check_text(text: str) -> bool:
     bgrs_count = count_ngrs_seq(text)
     bgrs_total: int = len(text)//2
 
+
+    # Idk why i use exactly these numbers to compare freqs.
+    # Just tolerance to take into account that texts arent identical
+    
+    # max score - point if text's bgrs occurency frequences 100% corresponds to theoretical
     max_score = len(mc_bgrs) + len(lc_bgrs) + len(forbidden_bgrs)
     counter = 0
     
-    # check most common bgrs
+    # check most common bgrs 
     for mc_bgr in mc_bgrs:
         if bgrs_count[mc_bgr]/bgrs_total >= 0.0017:
             counter += 1
@@ -140,6 +152,7 @@ def check_text(text: str) -> bool:
         if bgrs_count[lc_bgr]/bgrs_total <= 0.0002:
             counter += 1
 
+    # check bgrs with 0 occurences in "Mein campf"
     for fb_bgr in forbidden_bgrs:
         if bgrs_count[fb_bgr]/bgrs_total <= 0.00001:
             counter += 1
@@ -152,30 +165,10 @@ def check_text(text: str) -> bool:
         return False
 
 
+# go through potential keys, decrypt CT and ckeck if it seems to be valid
 def try_keys(ct: str) -> tuple[int, int]:
     for a, b in gen_all_possible_keys(ct):
         ot = decrypt(ct, a, b)
         if (check_text(ot)):
             print(f"****    {a}, {b}    ****")
             yield (a, b)
-            
-
-
-
-
-
-
-        
-#def brute(ct: str):
-#    for a in range(1, 961):
-#        if(a%31 == 0):
-#            continue
-#        print(f"{a} ", end='')
-#        for b in range(0, 961):
-#            ot = decrypt(ct, a, b)
-#            if(check_text(ot)):
-#                print(f"\n\n!!!!    ({a}, {b})    !!!!\n")
-
-
-
-

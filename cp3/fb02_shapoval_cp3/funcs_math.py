@@ -1,8 +1,25 @@
 import math
+from typing import Tuple
 
 
 def invert(x: int, m: int):
-    return pow(x, -1, m)
+    #return pow(x, -1, m)
+    
+    x = x % m
+    
+    prev = 0
+    res: int = 1
+    a: int = -1
+    b: int = -1
+    while(b != 1):
+        a = m // x
+        b = m % x
+        m = x
+        x = b
+        prev, res = res, prev + res * a * (-1)
+
+    return res
+
 
 
 # ax = b (mod n)
