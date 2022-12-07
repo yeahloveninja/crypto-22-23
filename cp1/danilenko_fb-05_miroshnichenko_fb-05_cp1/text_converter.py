@@ -1,6 +1,6 @@
 import re
 
-text = open("1.txt", 'r', encoding='utf-8').read()
+text = open("text2.txt", 'r', encoding='utf-8').read()
 
 alphabet = 'абвгдеёэжзиыйклмнопрстуфхцчшщъьюя'
 
@@ -16,8 +16,6 @@ result_text = re.sub(r' +', '_', result_text)
 
 print(result_text)
 
-with open("2.txt", 'w') as file:
-    file.write(result_text)
 
 result_text = result_text.replace('_', '')
 with open("3.txt", 'w') as file:
