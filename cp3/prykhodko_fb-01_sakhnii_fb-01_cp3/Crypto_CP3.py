@@ -1,4 +1,4 @@
-﻿from math import log2
+from math import log2
 
 
 def expanded_euclid(a: int, b: int) -> int:
@@ -47,7 +47,9 @@ def athenian_decryption(filename, mod=31):
         bigrams_count[cipher_text[index] + cipher_text[index + 1]] += 1
     bigrams_count = {bigram: count for bigram, count in
                      sorted(bigrams_count.items(), key=lambda item: item[1], reverse=True)}
+    print(f"[*]► Frequency of ciphertext bigrams {bigrams_count}")
     most_frequent_bigrams = list(bigrams_count.keys())[:5]
+    print(f"[*]► Top-5 most frequency bigrams of the ciphertext: {most_frequent_bigrams}\n")
     decrypted_text_list = list(cipher_text)
     decrypted_text_size = len(decrypted_text_list)
     all_a = []
@@ -60,21 +62,21 @@ def athenian_decryption(filename, mod=31):
                 for index4 in range(length):
                     if index2 == index1 or index3 == index4:
                         continue
-                    X0 = bigrams_numbers[bigrams_sorted_by_possibility[index1]]
-                    X1 = bigrams_numbers[bigrams_sorted_by_possibility[index2]]
-                    Y0 = bigrams_numbers[most_frequent_bigrams[index3]]
-                    Y1 = bigrams_numbers[most_frequent_bigrams[index4]]
-                    possible_a = linear_equations((Y0 - Y1) % mod, (X0 - X1) % mod)
+                    Xo = bigrams_numbers[bigrams_sorted_by_possibility[index1]]
+                    Xoo = bigrams_numbers[bigrams_sorted_by_possibility[index2]]
+                    Yo = bigrams_numbers[most_frequent_bigrams[index3]]
+                    Yoo = bigrams_numbers[most_frequent_bigrams[index4]]
+                    possible_a = linear_equations((Yo - Yoo) % mod, (Xo - Xoo) % mod)
                     for x in possible_a:
                         if x in all_a:
                             possible_a.remove(x)
                         else:
                             all_a.append(x)
-                    if possible_a == []:
+                    if not possible_a:
                         continue
                     possible_b = [0] * len(possible_a)
                     for i in range(len(possible_a)):
-                        possible_b[i] = (Y0 - possible_a[i] * X0) % mod
+                        possible_b[i] = (Yo - possible_a[i] * Xo) % mod
                     for curr in range(len(possible_a)):
                         a = possible_a[curr]
                         b = possible_b[curr]
