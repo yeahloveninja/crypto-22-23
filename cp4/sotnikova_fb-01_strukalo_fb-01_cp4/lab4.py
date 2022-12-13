@@ -6,7 +6,7 @@ import math
 
 def miller(p, q=30):
     if p <= 3:
-        raise Exception('number is more than 3. ')
+        raise Exception('number should be more than 3. ')
 
     if p % 2 == 0:
         return False
@@ -20,7 +20,7 @@ def miller(p, q=30):
         s += 1
 
     for _ in range(q):
-        # Нехай "а" буде з наступного проміжку [2,...,n − 2]
+        # Нехай "а" буде з наступного проміжку [2,...,p − 2]
         a = random.randint(2, p-2)
 
         # b = a^d mod p
