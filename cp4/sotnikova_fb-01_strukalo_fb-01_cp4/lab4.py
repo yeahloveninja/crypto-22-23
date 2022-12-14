@@ -165,17 +165,24 @@ def Verify(M, S, e, n):
 
 
 # Надсилання ключа
-def SendKey(k, e1, n1, S):
+def SendKey(k, e1, n1, M, e, n):
     k1 = pow(k, e1, n1)
+    S = Sign(k, d, n)
     S1 = pow(S, e1, n1)
-    return k1, S1
+    E = Encrypt(M, e, n)
+    return k1, S1, E
 
 
 # отримання ключа
-def ReceiveKey(k1, S1, d1, n1):
+def ReceiveKey(k1, S1, d1, n1, k0, E, d, n):
     k = pow(k1, d1, n1)
     S = pow(S1, d1, n1)
-    return k, S
+    D = Decrypt(E, d, n)
+    if k0 == k:
+        print('Ключ отримано\n')
+        return k, S, D
+    else:
+        print('Ключ не вдалося отримати')
 
 
 # аутентифікація
@@ -185,11 +192,16 @@ def authentication(S, e, n):
 
 
 M = random.randint(0, n)
-E = Encrypt(M, e, n)
-D = Decrypt(E, d, n)
+
 
 print('---------------------- №4----------------------')
 print("Повідомлення: ", M)
+
+
+k = random.randint(0, n)
+
+K1, S1, E = SendKey(k, e1, n1, M, e, n)
+K, S, D = ReceiveKey(K1, S1, d1, n1, k, E, d, n)
 print("Шифрування: ", E)
 print("Розшифрування:", D)
 
@@ -197,12 +209,5 @@ elerFun = (p - 1) * (q - 1)
 print("Ф-ція Ейлера:", elerFun)
 
 print("Перевірка тексту: ", M == D)
-
-k = random.randint(0, n)
-S = Sign(k, d, n)
-
-K1, S1 = SendKey(k, e1, n1, S)
-K, S_rec = ReceiveKey(K1, S1, d1, n1)
 k_rec = authentication(S, e, n)
 print("Перевірка ключа: ", k == k_rec)
-
