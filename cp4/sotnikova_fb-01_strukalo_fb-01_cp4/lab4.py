@@ -125,17 +125,22 @@ print('d1 = ', d1, '\n')
 
 
 print("---------Ключі для абонента А---------")
-print('p = ', p)
-print('q = ', q)
+print('Відкриті ключі для А:')
 print('e = ', e)
 print('n = ', n)
-print('d = ', d, '\n')
+print('Секретний ключ для А:')
+print('d = ', d)
+print('p = ', p)
+print('q = ', q, '\n')
+
 print("---------Ключі для абонента B---------")
-print('p1 = ', p1)
-print('q1 = ', q1)
+print('Відкриті ключі для В:')
 print('e1 = ', e1)
 print('n1 = ', n1)
-print('d1 = ', d1, '\n')
+print('Секретний ключ для В:')
+print('d1 = ', d1)
+print('p1 = ', p1)
+print('q1 = ', q1, '\n')
 
 
 # ---------------------- №4----------------------
@@ -165,22 +170,24 @@ def Verify(M, S, e, n):
 
 
 # Надсилання ключа
-def SendKey(k, e1, n1, M, e, n):
-    k1 = pow(k, e1, n1)
+def SendKey(k, d, e1, n1, M, e, n):
+    K1 = pow(k, e1, n1)
     S = Sign(k, d, n)
     S1 = pow(S, e1, n1)
     E = Encrypt(M, e, n)
-    return k1, S1, E
+
+    return K1, S1, E
 
 
 # отримання ключа
-def ReceiveKey(k1, S1, d1, n1, k0, E, d, n):
-    k = pow(k1, d1, n1)
+def ReceiveKey(K1, S1, d1, n1):
+    K = pow(K1, d1, n1)
+    print('Розшифрований k = ', k, '\n')
     S = pow(S1, d1, n1)
-    D = Decrypt(E, d, n)
-    if k0 == k:
+
+    if K:
         print('Ключ отримано\n')
-        return k, S, D
+        return K, S
     else:
         print('Ключ не вдалося отримати')
 
@@ -195,19 +202,27 @@ M = random.randint(0, n)
 
 
 print('---------------------- №4----------------------')
-print("Повідомлення: ", M)
-
 
 k = random.randint(0, n)
+print('Початковий k = ', k, '\n')
 
-K1, S1, E = SendKey(k, e1, n1, M, e, n)
-K, S, D = ReceiveKey(K1, S1, d1, n1, k, E, d, n)
+print("Повідомлення: ", M, '\n')
+# Абонент А формує повідомлення (K1, S1) і відправляє його В
+# У ф-ції SendKey() А робить підпис, шифрує його в S1 та шифрує повідомлення
+# Всі ці дії виконуються в SendKey()
+K1, S1, E = SendKey(k, d, e1, n1, M, e, n)
+
+# Абонент В за допомогою свого секретного ключа d1 знаходить конфіденційність (K, S)
+# І за допомогою відкритого ключа А перевіряє підпис А(автентифікація)
+K, S = ReceiveKey(K1, S1, d1, n1)
 print("Шифрування: ", E)
+D = Decrypt(E, d, n)
 print("Розшифрування:", D)
 
 elerFun = (p - 1) * (q - 1)
 print("Ф-ція Ейлера:", elerFun)
 
 print("Перевірка тексту: ", M == D)
-k_rec = authentication(S, e, n)
+k_rec = authentication(Sign(k, d, n), e, n)
 print("Перевірка ключа: ", k == k_rec)
+
