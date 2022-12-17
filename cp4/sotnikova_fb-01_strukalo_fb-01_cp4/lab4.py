@@ -170,24 +170,23 @@ def Verify(M, S, e, n):
 
 
 # Надсилання ключа
-def SendKey(k, d, e1, n1, M, e, n):
-    K1 = pow(k, e1, n1)
+def SendKey(k, d, e1, n1, n):
+    K1 = Encrypt(k, e1, n1)
     S = Sign(k, d, n)
-    S1 = pow(S, e1, n1)
-    E = Encrypt(M, e, n)
+    S1 = Encrypt(S, e1, n1)
 
-    return K1, S1, E
+    return K1, S1
 
 
 # отримання ключа
-def ReceiveKey(K1, S1, d1, n1):
-    K = pow(K1, d1, n1)
+def ReceiveKey(K1, S1, d1, n1, e, n):
+    K = Decrypt(K1, d1, n1)
     print('Розшифрований k = ', k, '\n')
-    S = pow(S1, d1, n1)
+    S = Decrypt(S1, d1, n1)
 
-    if K:
+    if Verify(K, S, e, n):
         print('Ключ отримано\n')
-        return K, S
+        return K
     else:
         print('Ключ не вдалося отримати')
 
@@ -209,13 +208,17 @@ print('Початковий k = ', k, '\n')
 print("Повідомлення: ", M, '\n')
 # Абонент А формує повідомлення (K1, S1) і відправляє його В
 # У ф-ції SendKey() А робить підпис, шифрує його в S1 та шифрує повідомлення
-# Всі ці дії виконуються в SendKey()
-K1, S1, E = SendKey(k, d, e1, n1, M, e, n)
+# Всі ці дії ввиконуються в SendKey()
+K1, S1 = SendKey(k, d, e1, n1, n)
+print(type(S1))
+# абонент А шифрує повідомлення
+E = Encrypt(M, e, n)
 
-# Абонент В за допомогою свого секретного ключа d1 знаходить конфіденційність (K, S)
-# І за допомогою відкритого ключа А перевіряє підпис А(автентифікація)
-K, S = ReceiveKey(K1, S1, d1, n1)
+# Абонент В задопомогою свого секретного ключа d1 знаходить конфеденційність (K, S)
+# І задопомогою відкритого ключа А перевіряє підпис А(автентифікація)
+K = ReceiveKey(K1, S1, d1, n1, e, n)
 print("Шифрування: ", E)
+# абонент В розшифровує повідомлення
 D = Decrypt(E, d, n)
 print("Розшифрування:", D)
 
@@ -223,6 +226,5 @@ elerFun = (p - 1) * (q - 1)
 print("Ф-ція Ейлера:", elerFun)
 
 print("Перевірка тексту: ", M == D)
-k_rec = authentication(Sign(k, d, n), e, n)
-print("Перевірка ключа: ", k == k_rec)
+
 
