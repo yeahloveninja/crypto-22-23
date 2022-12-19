@@ -68,12 +68,12 @@ def most_frequent(text):
 
 def generate_key(txt, key_len):
     rus_frequent=['о', 'а', 'е', 'и', 'н', 'т', 'р', 'с']
-    rflen = len(rus_frequent)
+    rusFreqLen = len(rus_frequent)
     key=''
-    for n in range(rflen):
+    for n in range(rusFreqLen):
         for i in range(key_len):
             blockMostFr = most_frequent([txt[k] for k in range(i, len(txt), key_len)])
-            key+=alphabet[(alphabet.index(blockMostFr)-alphabet.index(rus_frequent[n])+len(alphabet))%len(alphabet)] # формула k=(y* +x* )modm
+            key+=alphabet[(alphabet.index(blockMostFr)-alphabet.index(rus_frequent[n]))%len(alphabet)] # формула k=(y* +x* )modm
             if len(key) == key_len:
                 print(key)
                 answer = input("Ключ підходить? ")
