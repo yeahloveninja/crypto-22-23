@@ -66,13 +66,22 @@ def most_frequent(text):
         if value == max(freq.values()):
             return key
 
-def generate_key(txt, key_len, passage):
+def generate_key(txt, key_len):
     rus_frequent=['о', 'а', 'е', 'и', 'н', 'т', 'р', 'с']
+    rflen = len(rus_frequent)
     key=''
-    for i in range(key_len):
-        blockMostFr = most_frequent([txt[k] for k in range(i, len(txt), key_len)])
-        key+=alphabet[(alphabet.index(blockMostFr)-alphabet.index(rus_frequent[passage[i]%len(rus_frequent)])+len(alphabet))%len(alphabet)]
-    return key
+    for n in range(rflen):
+        for i in range(key_len):
+            blockMostFr = most_frequent([txt[k] for k in range(i, len(txt), key_len)])
+            key+=alphabet[(alphabet.index(blockMostFr)-alphabet.index(rus_frequent[n])+len(alphabet))%len(alphabet)] # формула k=(y* +x* )modm
+            if len(key) == key_len:
+                print(key)
+                answer = input("Ключ підходить? ")
+                if answer == "Yes":
+                    return key
+                else:
+                    key = ""
+                    continue
 
 def blocksSplit(text, length):
     blocks = []
@@ -98,8 +107,7 @@ def main():
         print("Індекс збігу: ", coincidenceIndex(encryptedText), "\n")
     for i in range(1, len(alphabet)):
         print('Довжина ключа=' + str(i) + ' Індекс збігу=' + str(blocksIndex(textEx2, i)))
-    passage = [0 for _ in range(14)]
-    print("Згенерований ключ: ", generate_key(textEx2, 14, passage))
+    print("Згенерований ключ: ", generate_key(textEx2, 14))
     decrypted_text = decrypt(textEx2, "чугунныенебеса")
     f=open(f'decrypted_text.txt','w',encoding='UTF-8')
     f.write(decrypted_text)
