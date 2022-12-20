@@ -26,18 +26,18 @@ def test(p):  # тест Міллера-Рабіна
     s = 0
     p1 = p - 1
     d = p1
-    while d % 2 == 0:
+    while d % 2 == 0:   # крок 0
         s += 1
         d = d // 2
     if check_plain(p) == 1:
-        for k in range(150):
+        for k in range(150):  # крок 1
             x = randint(1, p)  # генеруємо х
             if my_gcd(x, p) == 1:  # якщо НСД це 1
-                if (pow(x, d, p)) in [1, -1]:
+                if (pow(x, d, p)) in [1, -1]:  # крок 2.1
                     is_pseudo = 1  # число псевдопросте
                     return is_pseudo
                 else:
-                    for r in range(1, s - 1):
+                    for r in range(1, s - 1):  # крок 2.2
                         x_r = pow(x, d * pow(2, r), p)
                         if x_r == -1:
                             is_pseudo = 1  # число псевдопросте
@@ -125,20 +125,18 @@ def to_check(M, S, e, n):  # перевірка цифрового підпис�
     return M == pow(S, e, n)
 
 
-def to_send(k, e1, n1, S):  # відправлення ключа
-    k1 = pow(k, e1, n1)
-    S1 = pow(S, e1, n1)
-    return k1, S1
+def to_send(k, d, e1, n1, n):
+    k1 = to_encrypt(k, e1, n1)  # Абонент А формує повідомлення k1 s1 і відправляє його абоненту B
+    s = to_sign(k, d, n)
+    s1 = to_encrypt(s, e1, n1)
+    return k1, s1
 
 
-def to_receive(k1, S1, d1, n1):  # отримання ключа
-    k = pow(k1, d1, n1)
-    S = pow(S1, d1, n1)
-    return k, S
-
-
-def to_authenticate(S, e, n):  # автентифікація для перевірки ключа
-    k = pow(S, e, n)
+def to_receive(k1, s1, d1, n1, e, n):
+    k = to_decrypt(k1, d1, n1)     # Абонент B за допомогою свого секретного ключа d1 знаходить k s
+    print('decr k', k)
+    s = to_decrypt(s1, d1, n1)
+    ch = to_check(k, s, e, n)  # за допомогою відкритого ключа e абонент B перевіряє підпис А
     return k
 
 
@@ -190,18 +188,14 @@ else:
     print("\nChecking message: Incorrect.")
 
 k = randint(0, n)
-signed = to_sign(k, d, n)
-k1, signed1 = to_send(k, e1, n1, signed)
-# print(k1, signed1)
-k2, signed2 = to_receive(k1, signed1, d1, n1)
-# print(k2, signed2)
-final_k = to_authenticate(signed, e, n)
-if k == final_k:
-    print("Checking key: Correct.")
-else:
-    print("Checking key: Incorrect.")
+
+k1, s1 = to_send(k, d, e1, n1, n)
+
+received_k = to_receive(k1, s1, d1, n1, e, n)
+print('Checking key:', k == received_k)
 
 """Checking...."""
+
 n_hex = '8151DBE01E38BCFAD69AF5A7018AD9725E6E8FEF2556964E02D1173992A98077'
 e_hex = '10001'
 check_n = int(n_hex, 16)
@@ -213,4 +207,4 @@ print(to_encrypt(my_message, check_e, check_n))
 # 54978380305847369047303250572451177412363843279305469386038678280741947866138
 
 signed_message = int('5A6A2C0C427011ED2AD4C1F4B3E73C6B4CF2C4281C23151CAEAEBE282B9C61F2', 16)
-print(to_authenticate(signed_message, check_e, check_n))
+print(to_check(my_message, signed_message, check_e, check_n))
