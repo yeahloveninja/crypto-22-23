@@ -101,7 +101,7 @@ def send_secret_k(k_open: int, d_sndr: int, n_sndr: int, e_rcvr: int, n_rcvr: in
 
 # k = (k_encrypted)^(self.d) mod self.n     (decrypt key)
 # S = (S_encrypted)^(self.d) mod self.n     (decrypt sign)
-# k ?= S^(e_sndr) mod n_sndr            (verify sign)
+# k ?= S^(e_sndr) mod n_sndr                (verify with sign)
 def recv_secret_k(k_encrypted: int, S_encrypted: int, e_sndr: int, n_sndr: int, d_rcvr: int, n_rcvr: int) -> bool:
     k = decrypt(k_encrypted, d_rcvr, n_rcvr)
     S = decrypt(S_encrypted, d_rcvr, n_rcvr)
@@ -162,17 +162,8 @@ class User:
 
 
 
-#c1 = Client(1)
-#c2 = Client(2)
-#p1, q1, p2, q2 = gen_pq_pairs()
-#c1.gen_keys(p1, q1)
-#c2.gen_keys(p2, q2)
-#c1.print_vars_hex()
-#c2.print_vars_hex()
 
-#print(hex(c1.encrypt(0x228, 0x10001, 0x9577F906517C4BC99C0251C99E7DB06D)))
-
-
+# tests for https://asymcryptwebservice.appspot.com/?section=rsa
 
 server = User("Server")
 server.n = 0x976CE483778B2195B81D4B16372ED02592B5508F98C8B6D6C230A82FFB24E01C09BD40D9EC77A104884C4C9D2732402C537DEF3D25DF5B5CBBA9098D7DB42B95
@@ -221,9 +212,6 @@ k_enc_by_server = int(input("  key: "), 16)
 S_by_server = int(input("  signature: "), 16)
 k_from_server = recv_secret_k(k_enc_by_server, S_by_server, server.e, server.n, client.d, client.n)
 print(f"  {k_from_server}")
-
-
-
 
 
 
