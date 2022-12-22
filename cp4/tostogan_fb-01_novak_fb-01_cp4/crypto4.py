@@ -25,7 +25,7 @@ def test_milrab(p):
 	st = c
 	
 	for k in range(0, 17):
-		x = rd.randint(2, p-2)#proverit
+		x = rd.randint(2, p-1)
 		g = m.gcd(x,p)
 		if g>1:
 			return False		
@@ -122,7 +122,6 @@ def ReceiveKey(K_1, S_1, d_1, n_1, e, n): #Oтримання ключа
         print('Bob не отримав ключ')
 
 
-
 GenerateKeyPair()
 rs_A=GenerateKeyPairRSA(kluchi[0], kluchi[1])
 rs_B=GenerateKeyPairRSA(kluchi[2], kluchi[3])
@@ -155,20 +154,24 @@ with Bar('Encoding...') as bar:
 print("\nЗашифроване повідомлення: ", E, '\n')
 #Абонент Вob за допомогою свого секретного ключа d1 знаходить (K, S)
 K = ReceiveKey(K1, S1, rs_B[2], rs_B[1], rs_A[0], rs_A[1])
-print('\nВob розшифровує повідомлення')
-D = Decrypt(E, rs_A[2], rs_A[1])    
-with Bar('Decoding...') as bar:
-    for i in range(100):
-        time.sleep(0.02)
-        bar.next()
-print("\nРозшифроване повідомлення:", D)
-print('\nПеревірка тексту: ')
-with Bar('Processing...') as bar:
-    for i in range(100):
-        time.sleep(0.02)
-        bar.next()
-if M == D:
-	print('\nOбмін повідомленням між Alice і Bob успішний')
+
+if K!=None:
+	print('Вob розшифровує повідомлення')
+	D = Decrypt(E, rs_A[2], rs_A[1])    
+	with Bar('Decoding...') as bar:
+    		for i in range(100):
+        		time.sleep(0.02)
+        		bar.next()
+	print("\nРозшифроване повідомлення:", D)
+	print('\nПеревірка тексту: ')
+	with Bar('Processing...') as bar:
+    		for i in range(100):
+        		time.sleep(0.02)
+        		bar.next()
+	if M == D:
+		print('\nOбмін повідомленням між Alice і Bob успішний')
+else:
+	print('\nOбмін повідомленням неуспішний')
 
 
 
