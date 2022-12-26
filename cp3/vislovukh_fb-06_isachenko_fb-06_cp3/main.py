@@ -3,6 +3,7 @@ from itertools import permutations
 from math import log2
 
 alphabet = 'абвгдежзийклмнопрстуфхцчшщьыэюя'
+print(len(alphabet))
 most_frequent_bigrams = 'ст', 'но', 'то', 'на', 'ен'
 exception = ['аы', 'аь', 'йь', 'оы', 'уы', 'уь', 'чщ', 'чэ', 'ьы', 'яь', 'оь', 'ыь', 'еь', 'юь',
              'эь', 'ць', 'хь', 'кь', 'йь', 'иь', 'гь', 'еы', 'эы', 'иы', 'яы', 'юы', 'ыы', 'ьь']
@@ -82,7 +83,8 @@ def check_text_correctness(f_list_s: dict, f_list_big: dict, t_len: int) -> bool
     :param t_len: text length
     :return: bool
     """
-    return entropy(f_list_s, t_len) < 4.5 and entropy(f_list_big, t_len, n=2) < 4.2
+    most_frequent_letter = list(sorted(f_list_s.items(), key=lambda item: item[1],reverse=True))[0][0]
+    return entropy(f_list_s, t_len) < 4.5 and entropy(f_list_big, t_len, n=2) < 4.2 and most_frequent_letter in ["о", "е"]
 
 
 def decrypt_affine(string: str, key: tuple[int, int]) -> str:
@@ -101,22 +103,19 @@ def gnc_keys(string: str, f_size=5) -> str:
     :param f_size: кількість часто використовуваних біграм, які будуть генерувати ключі
     """
     f_list = bigram_frequency(string)[:f_size]
-    print(f_list)
     for i in permutations(most_frequent_bigrams, 2):
         for j in range(len(f_list) - 1):
             key_1 = get_first_key_element(i[0], i[1], f_list[j][0], f_list[j + 1][0])
             if key_1 is None:
                 continue
-
             for solution in key_1:
                 key = solution, get_second_key_element(i[0], f_list[j][0], solution)
                 d_text = decrypt_affine(string, key)
                 if check_text_correctness(Counter(d_text), bigram_frequency(d_text, sort=False), len(d_text)):
-                    print(key)
                     return d_text
 
 
 answer = gnc_keys(c_text)
-print(answer[:40])
-with open("decrypt.txt", "w", encoding='utf-8') as f:
-    f.write(answer)
+print(answer[:100])
+# with open("decrypt.txt", "w", encoding='utf-8') as f:
+#     f.write(answer)
