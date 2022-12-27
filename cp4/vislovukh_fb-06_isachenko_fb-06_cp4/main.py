@@ -194,8 +194,8 @@ def create_sign(message, d, n):
 
 
 def receive_key(e, n, k1, s1, d1, n1):
-    k = sign(k1, d1, n1)
-    s = sign(s1, d1, n1)
+    k = decrypt(k1, d1, n1)
+    s = decrypt(s1, d1, n1)
     sign_check = check_sign(k, s, e, n)
     if sign_check[0] == "Verification ok":
         return ["Auth", k]
