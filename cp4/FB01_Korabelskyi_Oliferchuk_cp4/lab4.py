@@ -1,8 +1,8 @@
 import random
 from math import gcd
 
-max = pow(2, 255) + 1
-min = pow(2, 256) - 1
+min = pow(2, 255) + 1
+max = pow(2, 256) - 1
 def TextToInt(txt):
     return int(txt.encode('utf-8').hex(), 16)
 
@@ -57,12 +57,12 @@ def Enc(message, n, e):
     p = pow(message, e, n)
     return p
 
-def Dec(encrMsg, d, n):
-    p = pow(encrMsg, d, n)
+def Dec(encrMsg, d, p, q):
+    p = pow(encrMsg, d, p * q)
     return p
 
-def DigSign(message, d, n):
-    p = pow(message, d, n)
+def DigSign(message, d, p, q):
+    p = pow(message, d, p * q)
     return p
 
 def SignVerification(message, sign, opKey):
