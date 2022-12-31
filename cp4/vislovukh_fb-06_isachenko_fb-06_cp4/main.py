@@ -1,5 +1,6 @@
 from random import randint
 from math import log2
+import time
 
 MIN = 2 ** 256
 MAX = 2 * MIN - 2
@@ -162,12 +163,12 @@ def decrypt(encrypt_message, d, n):
 
 
 def sign(message, d, n):
-    signed_message = fast_exp(message, d, n)
+    signed_message = encrypt(message, d, n)
     return signed_message
 
 
 def verify(message, signed_message, e, n):
-    message_to_check = fast_exp(signed_message, e, n)
+    message_to_check = encrypt(signed_message, e, n)
     if message == message_to_check:
         return 1
     else:
@@ -175,26 +176,10 @@ def verify(message, signed_message, e, n):
 
 
 def send_key(n, d, e1, n1, k):
-    k1 = fast_exp(k, e1, n1)
-    s = fast_exp(k, d, n)
-    s1 = fast_exp(s, e1, n1)
+    k1 = encrypt(k, e1, n1)
+    s = sign(k, d, n)
+    s1 = encrypt(s, e1, n1)
     return k1, s1
-
-
-def receive_key(e, n, k1, s1, d1, n1):
-    k = fast_exp(k1, d1, n1)
-    s = fast_exp(s1, d1, n1)
-    auth = fast_exp(s, e, n)
-    if auth == k:
-        return "Auth"
-    else:
-        return "Not Auth"
-
-
-def create_sign(message, d, n):
-    signed_message = sign(message, d, n)
-    return signed_message
-
 
 def check_sign(message, sign_message, e, n):
     verification = verify(message, sign_message, e, n)
@@ -203,6 +188,45 @@ def check_sign(message, sign_message, e, n):
     else:
         return ["Verification failed", message]
 
+def create_sign(message, d, n):
+    signed_message = sign(message, d, n)
+    return signed_message
+
+
+def receive_key(e, n, k1, s1, d1, n1):
+    k = decrypt(k1, d1, n1)
+    s = decrypt(s1, d1, n1)
+    sign_check = check_sign(k, s, e, n)
+    if sign_check[0] == "Verification ok":
+        return ["Auth", k]
+    else:
+        return ["Not Auth", k]
+
+
+start_time = time.time()
+pairs = create_pair(MIN,MAX)
+keys_A = generate_key_pair(pairs[0],pairs[1])
+keys_B = generate_key_pair(pairs[2],pairs[3])
+print("--- %s seconds ---" % (time.time() - start_time))
+# print(pairs)
+# print(keys_A)
+# print(keys_B)
+
+e_A = keys_A[0][0]
+n_A = keys_A[0][1]
+d_A = keys_A[1][0]
+
+e_B = keys_B[0][0]
+n_B = keys_B[0][1]
+d_B = keys_B[1][0]
+
+message = randint(MIN,MAX)
+# signed_message = sign(message,d_A,n_A)
+# check_signed_message = check_sign(message,signed_message,e_B,n_B)
+# print(check_signed_message)
+
+
+
 
 # A_encrypt = encrypt(message, e_A, n_A)
 # A_decrypt = decrypt(A_encrypt, d_A, n_A)
@@ -210,20 +234,20 @@ def check_sign(message, sign_message, e, n):
 # print("Зашивроване повідомлення : " + str(A_encrypt))
 # print("Розшифроване повідомлення : " + str(A_decrypt))
 
-# k = randint(0, n_A)
+k = randint(0, n_A)
 
-# print("Ключ k : " + str(k))
+print("Ключ k : " + str(k))
 
-# send = send_key(n_A, d_A, e_B, n_B, k)
+send = send_key(n_A, d_A, e_B, n_B, k)
 
-# k1 = send[0]
-# s1 = send[1]
+k1 = send[0]
+s1 = send[1]
 
-# receive = receive_key(e_A, n_A, k1, s1, d_B, n_B)
+receive = receive_key(e_A, n_A, k1, s1, d_B, n_B)
 
-# print(receive)
-# print("Ключ k1 : " + str(k1))
-# print("Ключ s1 : " + str(s1))
+print(receive)
+print("Ключ k1 : " + str(k1))
+print("Ключ s1 : " + str(s1))
 
 # signature = create_sign(message, d_A, n_A)
 # check_signature = check_sign(message, signature, e_A, n_A)
@@ -237,17 +261,17 @@ def check_sign(message, sign_message, e, n):
 # signature 35EADA246FE0A0C28D1EB49E92AE11A982E8890E2543ACB3F4B516C0253958F7
 
 # mod D9669737576D37A8B7CA4C1DF394514D51200E350C8E027D408EF3B79C4CBA9B
-ACLE_n = 98333150198878732362049457536571285314575200836982636537534492909076445182619
-# public exp (e) 10001
-ACLE_e = 65537
-# message 22
-ACLE_message = 34
-
-# encrypt 60246253594311452391106401177082839448753614472186264481298290795565785831456
-ACLE_encrypt = encrypt(ACLE_message, ACLE_e, ACLE_n)
-
-# signature 35EADA246FE0A0C28D1EB49E92AE11A982E8890E2543ACB3F4B516C0253958F7
-ACLE_sign = 24387528751115011838962269802416685358045221117918323190434208470255678347511
-
-ACLE_verify = check_sign(ACLE_message, ACLE_sign, ACLE_e, ACLE_n)
-print(ACLE_verify)
+# ACLE_n = 98333150198878732362049457536571285314575200836982636537534492909076445182619
+# # public exp (e) 10001
+# ACLE_e = 65537
+# # message 22
+# ACLE_message = 34
+#
+# # encrypt 60246253594311452391106401177082839448753614472186264481298290795565785831456
+# ACLE_encrypt = encrypt(ACLE_message, ACLE_e, ACLE_n)
+#
+# # signature 35EADA246FE0A0C28D1EB49E92AE11A982E8890E2543ACB3F4B516C0253958F7
+# ACLE_sign = 24387528751115011838962269802416685358045221117918323190434208470255678347511
+#
+# ACLE_verify = check_sign(ACLE_message, ACLE_sign, ACLE_e, ACLE_n)
+# print(ACLE_verify)
