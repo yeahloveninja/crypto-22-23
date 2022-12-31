@@ -1,31 +1,9 @@
-from random import randint
 from funcs_math import *
 from math import gcd
 
 rand_prime_min: int = int('1'+'0'*255, 2)
 rand_prime_max: int = int('1'*256, 2)
-prime_check_iters = 128
 
-
-# https://www.geeksforgeeks.org/primality-test-set-2-fermet-method/  by Aanchal Tiwari
-# Fermat's little theorem: (a in Z) and (n is prime) and (gcd(a, n)==1) ==> a^(n-1) % n = 1
-def is_prime(n: int, check_iters: int = prime_check_iters) -> bool:
-    # pre-calculated cases (not used here)
-    if n <= known_primes_max:
-        #print(f"[is_prime] {n} <= known_primes_max ", end='')
-        if n in known_primes:
-            #print(f"and is in known_primes")
-            return True
-        #print(f"but not in known_primes")
-        return False    # if n is less than max known prime and not in prime list ==> it's not prime
-
-    for i in range(check_iters):
-        # Pick a random number in [2..n-2]     
-        a = randint(2, n - 2)
-        # Fermat's little theorem
-        if mod_pow(a, n - 1, n) != 1:
-            return False
-    return True
 
 
 def rand_prime(range_min: int = rand_prime_min, range_max: int = rand_prime_max, check_iters: int = prime_check_iters) -> int:
@@ -34,7 +12,7 @@ def rand_prime(range_min: int = rand_prime_min, range_max: int = rand_prime_max,
     while(True):
         attempts += 1
         res = randint(range_min, range_max)
-        if (is_prime(res, check_iters)):
+        if (is_prime_fermat(res, check_iters)):
             #print(f"[rand_prime] attempts = {attempts}")
             return res
 
@@ -151,72 +129,57 @@ class User:
         print(f"  e = {hex(self.e)}")
         print(f"  d = {hex(self.d)}")
 
-    def print_vars(self):
-        print(f"user {self.name}:")
-        print(f"  p = {self.p}")
-        print(f"  q = {self.q}")
-        print(f"  n = {self.n}")
-        print(f"  φ = {self.phi}")
-        print(f"  e = {self.e}")
-        print(f"  d = {self.d}")
-
-
 
 
 # tests for https://asymcryptwebservice.appspot.com/?section=rsa
+if __name__ == "__main__":
+    server = User("Server")
+    server.n = 0x976CE483778B2195B81D4B16372ED02592B5508F98C8B6D6C230A82FFB24E01C09BD40D9EC77A104884C4C9D2732402C537DEF3D25DF5B5CBBA9098D7DB42B95
+    server.e = 0x10001
+    server.print_vars_hex()
 
-server = User("Server")
-server.n = 0x976CE483778B2195B81D4B16372ED02592B5508F98C8B6D6C230A82FFB24E01C09BD40D9EC77A104884C4C9D2732402C537DEF3D25DF5B5CBBA9098D7DB42B95
-server.e = 0x10001
-server.print_vars_hex()
+    client = User("Client")
+    #client.gen_keys(rand_prime(), rand_prime())
+    client.gen_keys(0xeb6c89d281e20b9334d1a574c99faed3d123fab1ac35c6e5b75e8631960a5799, 0xc4645be8e618de25bcf0ffbdc27e45b7f500afcef3acd9466ef0165144939a0d)
+    client.print_vars_hex()
 
-client = User("Client")
-#client.gen_keys(rand_prime(), rand_prime())
-client.gen_keys(0xeb6c89d281e20b9334d1a574c99faed3d123fab1ac35c6e5b75e8631960a5799, 0xc4645be8e618de25bcf0ffbdc27e45b7f500afcef3acd9466ef0165144939a0d)
-client.print_vars_hex()
+    msg: int = 0x1488
 
-msg: int = 0x1488
-
-msg_enc_by_client: int = encrypt(msg, server.e, server.n)
-print(f"Client encrypts msg for Server:\n    {hex(msg_enc_by_client)}")
-
-
-msg_enc_by_server: int = encrypt(msg, client.e, client.n)
-print(f"Server encrypts msg for Client:\n    {hex(msg_enc_by_server)}")
-
-msg_dec_by_client: int = decrypt(msg_enc_by_server, client.d, client.n)
-print(f"Client decrypts msg from Server:\n    {hex(msg_dec_by_client)}")
+    msg_enc_by_client: int = encrypt(msg, server.e, server.n)
+    print(f"Client encrypts msg for Server:\n    {hex(msg_enc_by_client)}")
 
 
+    msg_enc_by_server: int = encrypt(msg, client.e, client.n)
+    print(f"Server encrypts msg for Client:\n    {hex(msg_enc_by_server)}")
 
-signature_by_server: int = 0x176EE81AB4691EBBF4F4DAC4FFDA5F2E54AAD61B02030C8EFC28DA16FE1AEB709E0F1F403C1A6184375484C21CA51A249675454BEFBA47229B1954CF504AA69E
-print(f"Client verivies msg from Server: {verify(msg, signature_by_server, server.e, server.n)}")
-
-signature_by_client: int = sign(msg, client.d, client.n)
-print(f"Client signs msg: \n    {hex(signature_by_client)}")
+    msg_dec_by_client: int = decrypt(msg_enc_by_server, client.d, client.n)
+    print(f"Client decrypts msg from Server:\n    {hex(msg_dec_by_client)}")
 
 
 
-#client.regen_n_less_than(server.n)
-client.gen_keys(0xe08223cee541e8ae7b1b305b5af3f0227339fd9dd0647b8241059de4f8fded89, 0x9a3184beaaf621e308227ac8692e64def286cf97b8b606f4c3c4ecee54d67e5f)
-client.print_vars_hex()
+    signature_by_server: int = 0x176EE81AB4691EBBF4F4DAC4FFDA5F2E54AAD61B02030C8EFC28DA16FE1AEB709E0F1F403C1A6184375484C21CA51A249675454BEFBA47229B1954CF504AA69E
+    print(f"Client verivies msg from Server: {verify(msg, signature_by_server, server.e, server.n)}")
 
-k_enc_by_client, S_by_client = send_secret_k(msg, client.d, client.n, server.e, server.n)
-print(f"Client sends secret k")
-print(f"  k_encrypted: {hex(k_enc_by_client)}")
-print(f"  S_encrypted: {hex(S_by_client)}")
-
-
-print(f"Client receives secret k")
-k_enc_by_server = int(input("  key: "), 16)
-S_by_server = int(input("  signature: "), 16)
-k_from_server = recv_secret_k(k_enc_by_server, S_by_server, server.e, server.n, client.d, client.n)
-print(f"  {k_from_server}")
+    signature_by_client: int = sign(msg, client.d, client.n)
+    print(f"Client signs msg: \n    {hex(signature_by_client)}")
 
 
 
+    #client.regen_n_less_than(server.n)
+    client.gen_keys(0xe08223cee541e8ae7b1b305b5af3f0227339fd9dd0647b8241059de4f8fded89, 0x9a3184beaaf621e308227ac8692e64def286cf97b8b606f4c3c4ecee54d67e5f)
+    client.print_vars_hex()
+
+    k_enc_by_client, S_by_client = send_secret_k(msg, client.d, client.n, server.e, server.n)
+    print(f"Client sends secret k")
+    print(f"  k_encrypted: {hex(k_enc_by_client)}")
+    print(f"  S_encrypted: {hex(S_by_client)}")
 
 
+    print(f"Client receives secret k")
+    k_enc_by_server = int(input("  key: "), 16)
+    S_by_server = int(input("  signature: "), 16)
+    k_from_server = recv_secret_k(k_enc_by_server, S_by_server, server.e, server.n, client.d, client.n)
+    print(f"  {k_from_server}")
 
 
 

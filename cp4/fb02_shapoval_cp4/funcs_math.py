@@ -1,3 +1,6 @@
+from random import randint, randrange
+prime_check_iters = 64
+
 
 def primes_eratosthenes(n: int):
     numbers: list = list(range(1, n+1, 2))
@@ -11,36 +14,25 @@ known_primes_max: int = 2**8
 known_primes = primes_eratosthenes(known_primes_max)
 
 
+# a^n mod m
+def mod_pow(a: int, n: int, p: int):
+    res: int = 1
+    a = a % p
+    while (True):
+        # check if lowest radix is 1
+        #   (n%2 == 1) is a bit slower than (n & 00...001)
+        if (n & 1):
+            res *= a
+            res %= p
+            # seems to be a bit faster than res = (res * a) % p
 
-# https://www.geeksforgeeks.org/primality-test-set-2-fermet-method/  by Aanchal Tiwari
-#   xⁿ mod p
-'''def mod_pow(x, n, p):
-    if (n<0):
-        raise IOError("[mod_pow] n must be >0")
-
-    res = 1
-    x = x % p   # avoid x>=p and x<0
-    
-    while n > 0:
-        # If n is odd, multiply 'a' with result
-        if n % 2:
-            res = (res * x) % p
-            n = n - 1
-        else:
-            x = (x ** 2) % p
-            # n must be even now
-            n = n // 2
-    return res % p'''
-
-def mod_pow(x, y, m):
-    res = 1
-    x = x%m
-    while y > 0:
-        if y & 1:
-            res = (res*x)%m
-        y = y >> 1
-        x = (x*x)%m
-    return res
+        # exit if it was the last iteration
+        if (n == 1):
+            return res
+        
+        # shift n to use next radix in the next itaration
+        n >>= 1
+        a = (a * a) % p     # a**2 turned out to be much slower than a*a
 
 
 # https://github.com/ipt-labs/crypto-22-23/blob/main/cp3/fb02_shapoval_cp3/funcs_math.py
@@ -62,28 +54,50 @@ def invert(x: int, m: int):
     return res % old_m
 
 
+# https://www.geeksforgeeks.org/primality-test-set-2-fermet-method/  by Aanchal Tiwari
+# descr: https://habr.com/ru/company/otus/blog/486116/
+# Fermat's little theorem: (a in Z) and (n is prime) and (gcd(a, n)==1) ==> a^(n-1) % n = 1
+def is_prime_fermat(n: int, check_iters: int = prime_check_iters) -> bool:
+    # pre-calculated cases (not used here)
+    if n <= known_primes_max:
+        #print(f"[is_prime] {n} <= known_primes_max ", end='')
+        if n in known_primes:
+            #print(f"and is in known_primes")
+            return True
+        #print(f"but not in known_primes")
+        return False    # if n is less than max known prime and not in prime list ==> it's not prime
+
+    while check_iters > 0:
+        # Pick a random number in [2..n-2]     
+        a = randint(2, n - 2)
+        # Fermat's little theorem
+        if mod_pow(a, n - 1, n) != 1:
+            return False
+        check_iters -= 1
+    return True
 
 
+# https://gist.github.com/Ayrx/5884790
+def is_prime_rabin(n: int, k: int=prime_check_iters):
+    if n == 2:
+        return True
 
+    if n % 2 == 0:
+        return False
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    r, s = 0, n - 1
+    while s % 2 == 0:
+        r += 1
+        s //= 2
+    for _ in range(k):
+        a = randrange(2, n - 1)
+        x = pow(a, s, n)
+        if x == 1 or x == n - 1:
+            continue
+        for _ in range(r - 1):
+            x = pow(x, 2, n)
+            if x == n - 1:
+                break
+        else:
+            return False
+    return True
