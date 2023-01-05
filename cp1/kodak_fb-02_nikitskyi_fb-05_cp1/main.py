@@ -27,7 +27,7 @@ def clean_file() -> Optional[bool]:
 def monogram_frequency(space=True) -> dict:
     """Get frequency of monograms in text"""
 
-    with open(CLEAN_FILE) as f:
+    with open(CLEAN_FILE, "r", encoding="utf-8") as f:
         f = f.read()
     if space:
         t = Counter(f)
@@ -41,29 +41,27 @@ def monogram_frequency(space=True) -> dict:
     # напечатать(res)
     return {k: v / len(f) for k, v in t.items()}
 
-
-def bgram_frequency(space=True, inter=False) -> dict:
+def bgram_frequency(space: bool, inter: bool) -> dict:
     """Get frequency of bgrams in text"""
 
-    with open(CLEAN_FILE) as f:
+    with open(CLEAN_FILE, "r", encoding="utf-8") as f:
         f = f.read()
     if space and inter:
-        t = Counter(f[i:i + 2] for i in range(0,len(f), 2))
+        t = Counter(f[i:i + 2] for i in range(0,len(f)-1))
     elif space and not inter:
-        t = Counter(f[i:i + 2] for i in range(len(f)))
+        t = Counter(f[i:i + 2] for i in range(0, len(f), 2))
     elif not space and inter:
         f = f.replace(" ", "")
-        t = Counter(f[i:i + 2] for i in range(0,len(f), 2))
+        t = Counter(f[i:i + 2] for i in range(0,len(f)-1))
     else:
         f = f.replace(" ", "")
-        t = Counter(f[i:i + 2] for i in range(len(f)))
-    res = ""
-    for k, v in sorted(t.items(), key=lambda k: k[1], reverse=True):
-        res += f"{k}: {v/len(f)}\n"
+        t = Counter(f[i:i + 2] for i in range(0, len(f), 2))
 
-    # напечатать(res)
-    return {k: v / len(f) for k, v in t.items()}
-
+    total_count = sum(t.values())
+    frequencies = {}
+    for bigram, count in t.items():
+        frequencies[bigram] = count / total_count
+    return frequencies
 
 def entropy(f: dict, n: int) -> float:
     """Count H<n>"""
@@ -71,6 +69,7 @@ def entropy(f: dict, n: int) -> float:
     e = -sum(p * math.log2(p) for p in f.values())
     e *= 1 / n
     return e
+
 
 def redundancy(h: float, n: int) -> float:
     """Count redunadncy for Hn"""
@@ -90,7 +89,7 @@ if __name__ == "__main__":
     напечатать("H2 bgram_frequency with spaces and with intersection", entropy(bgram_frequency(space=True, inter=True), 2))
     напечатать("H2 redundancy bgram_frequency with spaces and with intersection", redundancy(entropy(bgram_frequency(space=True, inter=True), 2),ALPHABET_LENGTH_WITH_SPACE))
     
-    напечатать("H2 bgram_frequency with spaces and without intersection", entropy(bgram_frequency(inter=False), 2))
+    напечатать("H2 bgram_frequency with spaces and without intersection", entropy(bgram_frequency(space=True, inter=False), 2))
     напечатать("H2 redundancy bgram_frequency with spaces and without intersection", redundancy(entropy(bgram_frequency(space=True, inter=False), 2),ALPHABET_LENGTH_WITH_SPACE))
     
     напечатать("H2 bgram_frequency without spaces and with intersection", entropy(bgram_frequency(space=False, inter=True), 2))
@@ -98,4 +97,3 @@ if __name__ == "__main__":
     
     напечатать("H2 bgram_frequency without spaces and without intersection", entropy(bgram_frequency(space=False, inter=False), 2))
     напечатать("H2 redundancy bgram_frequency without spaces and without intersection", redundancy(entropy(bgram_frequency(space=False, inter=False), 2), ALPHABET_LENGTH))
-    exit()
