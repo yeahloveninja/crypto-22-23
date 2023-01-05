@@ -101,7 +101,6 @@ def ds_is_verified(ms: list, e: int, n: int):
     # Authentication: returns True and False depending on a result of authentication process
     # Compare m and m', m' = (s^e)mod(n) |  m - text to send; d - secret key; n - public key;
     message, signature = ms[0], ms[1]
-    q = pow(signature, e, n)
     return True if pow(signature, e, n) == message else False
 
 
@@ -137,7 +136,7 @@ def start():
     else:
         print(f'B→A: Failed!')
 
-    print(f'\np1 = {p1}\nq1 = {q1}\np2 = {p2}\nq2 = {q2}\n\nd1 = {d1}\nd2 = {d2}\ne = {e1}\nn1 = {n1}\nn2 = {n1}')
+    print(f'\np1 = {p1}\nq1 = {q1}\np2 = {p2}\nq2 = {q2}\n\nd1 = {d1}\nd2 = {d2}\ne = {e1}\nn1 = {n1}\nn2 = {n2}')
     print(f'\nM = {M}\nC = {C}\nS = {MS[1]}\nM\' = {D}')
 
 
