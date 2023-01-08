@@ -56,9 +56,9 @@ def inverse_mod(first_num: int, second_num: int) -> int:
     return extended_euclid(first_num, second_num)[1]
 
 
-def generate_rsa(p: int, q: int) -> (int, int, int):
-    n = p * q
-    phi = (p - 1) * (q - 1)
+def generate_rsa(first_key: int, second_key: int) -> (int, int, int):
+    n = first_key * second_key
+    phi = (first_key - 1) * (second_key - 1)
     e = random.randrange(2, phi - 1)
     while math.gcd(e, phi) != 1:
         e = random.randrange(2, phi - 1)
@@ -69,3 +69,15 @@ def generate_rsa(p: int, q: int) -> (int, int, int):
 p, q, p_1, q_1 = generate_key()
 print(f"p = {p}, q = {q}")
 print(f"p_1 = {p_1}, q_1 = {q_1}")
+print()
+print('RSA')
+e, n, d = generate_rsa(p, q)
+print(f'e = {e}')
+print(f'n = {n}')
+print(f'd = {d}')
+
+e_1, n_1, d_1 = generate_rsa(p_1, q_1)
+print(f'e_1 = {e_1}')
+print(f'n_1 = {n_1}')
+print(f'd_1 = {d_1}')
+
