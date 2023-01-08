@@ -103,7 +103,6 @@ if __name__ == '__main__':
     with open('13.txt', 'r') as f:
         file_text = f.read()
         file_text = file_text.replace("\n", "")
-
     current_bi_grams = find_ngram(file_text)
     keys = []
     for i in range(0, 4):
@@ -120,7 +119,6 @@ if __name__ == '__main__':
                     if answer != -1:
                         key = (answer, ((first_y - answer * first_x) % (31 * 31)))
                         keys.append(key)
-
     for k in keys:
         final_text = decrypt(file_text, k[0], k[1])
         if check(final_text):
