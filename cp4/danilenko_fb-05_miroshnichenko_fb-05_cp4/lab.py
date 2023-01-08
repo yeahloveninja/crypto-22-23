@@ -31,18 +31,38 @@ class Client:
     def __init__(self, p: int, q: int):
         self.RSA = RSA(p, q)
 
+    @staticmethod
+    def encryption(msg, e, n):
+        return pow(msg, e, n)
+
+    @staticmethod
+    def decryption(encrypted_msg, d, n):
+        return pow(encrypted_msg, d, n)
+
+    @staticmethod
+    def signature(sign, d, n):
+        return pow(sign, d, n)
+
+    @staticmethod
+    def authentication(msg, sign, e, n):
+        return msg == pow(sign, e, n)
+
+    @staticmethod
+    def final_authentication(sign, e, n):
+        return pow(sign, e, n)
+
     def send_key(self, msg: int, e1: int, n1: int) -> (int, int):
-        encrypt_msg = pow(msg, e1, n1)
-        sign = pow(msg, self.RSA.d, self.RSA.n)
-        encrypt_sign = pow(sign, e1, n1)
+        encrypt_msg = self.encryption(msg, e1, n1)
+        sign = self.signature(msg, self.RSA.d, self.RSA.n)
+        encrypt_sign = self.encryption(sign, e1, n1)
 
         return encrypt_msg, encrypt_sign
 
     def receive_key(self, encrypt_msg: int, encrypt_sign: int, e: int, n: int) -> int:
-        msg = pow(encrypt_msg, self.RSA.d, self.RSA.n)
-        sign = pow(encrypt_sign, self.RSA.d, self.RSA.n)
+        msg = self.decryption(encrypt_msg, self.RSA.d, self.RSA.n)
+        sign = self.decryption(encrypt_sign, self.RSA.d, self.RSA.n)
 
-        if pow(sign, e, n):
+        if self.final_authentication(sign, e, n):
             print('Key matched!')
             return msg
         else:
