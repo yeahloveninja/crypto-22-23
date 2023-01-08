@@ -31,42 +31,22 @@ class Client:
     def __init__(self, p: int, q: int):
         self.RSA = RSA(p, q)
 
-    def Encrypt(M, e, n):
-        C = pow(M, e, n)
-        return C
+    def send_key(self, msg: int, e1: int, n1: int) -> (int, int):
+        encrypt_msg = pow(msg, e1, n1)
+        sign = pow(msg, self.RSA.d, self.RSA.n)
+        encrypt_sign = pow(sign, e1, n1)
 
-    def Decrypt(C, d, n):
-        M = pow(C, d, n)
-        return M
+        return encrypt_msg, encrypt_sign
 
-    def Sign(M, d, n):
-        S = pow(M, d, n)
-        return S
+    def receive_key(self, encrypt_msg: int, encrypt_sign: int, e: int, n: int) -> int:
+        msg = pow(encrypt_msg, self.RSA.d, self.RSA.n)
+        sign = pow(encrypt_sign, self.RSA.d, self.RSA.n)
 
-    def Verify(M, S, e, n):
-        return M == pow(S, e, n)
-
-    def SendKey(k, n):
-        K1 = pow(k, e1, n1)
-        S = pow(k, d, n)
-        S1 = pow(S, e1, n1)
-
-        return K1, S1
-
-    def ReceiveKey(K1, S1, d1, n1, e, n):
-        K = pow(K1, d1, n1)
-        print('Розшифрований k = ', k, '\n')
-        S = pow(S1, d1, n1)
-
-        if pow(K, S, e, n):
-            print('Ключ отримано\n')
-            return K
+        if pow(sign, e, n):
+            print('Key matched!')
+            return msg
         else:
-            print('Ключ не вдалося отримати')
-
-    def authentication(S, e, n):
-        k = pow(S, e, n)
-        return k
+            print('Key did not match!')
 
 
 def is_probably_prime(num: int, count: int = 10) -> bool:
@@ -94,34 +74,27 @@ def is_probably_prime(num: int, count: int = 10) -> bool:
             return False
     return True
 
-def generate_prime(self, bit_len: int) -> int:
+
+def generate_prime(bit_len: int) -> int:
     while True:
         number = (random.randrange(2 ** (bit_len - 1), 2 ** bit_len))
-        if self.is_probably_prime(number):
+        if is_probably_prime(number):
             return number
 
-def generate_key(self) -> (int, int, int, int):
+
+def generate_key() -> (int, int, int, int):
     while True:
         keys = []
         for i in range(0, 4):
-            key = self.generate_prime(256)
+            key = generate_prime(256)
             keys.append(key)
         if keys[0] * keys[1] < keys[2] * keys[3]:
             return keys[0], keys[1], keys[2], keys[3]
 
 
 p, q, p_1, q_1 = generate_key()
-print(f"p = {p}, q = {q}")
-print(f"p_1 = {p_1}, q_1 = {q_1}")
-print()
-print('RSA')
-e, n, d = generate_rsa(p, q)
-print(f'e = {e}')
-print(f'n = {n}')
-print(f'd = {d}')
-
-e_1, n_1, d_1 = generate_rsa(p_1, q_1)
-print(f'e_1 = {e_1}')
-print(f'n_1 = {n_1}')
-print(f'd_1 = {d_1}')
-
+first_cli = Client(p, q)
+second_cli = Client(p_1, q_1)
+message, message_sign = first_cli.send_key(14, second_cli.RSA.e, second_cli.RSA.n)
+result = second_cli.receive_key(message, message_sign, first_cli.RSA.e, first_cli.RSA.n)
+print(f'Message - {result}')
