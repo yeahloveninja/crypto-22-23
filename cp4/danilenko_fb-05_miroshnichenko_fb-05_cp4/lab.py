@@ -117,7 +117,7 @@ first_cli = Client(p_0, q_0)
 second_cli = Client(p_1, q_1)
 message, message_sign = first_cli.send_key(14, second_cli.RSA.e, second_cli.RSA.n)
 result = second_cli.receive_key(message, message_sign, first_cli.RSA.e, first_cli.RSA.n)
-print(f"Combination for A:\np:{p}\nq:{q}")
+print(f"Combination for A:\np:{p_0}\nq:{q_0}")
 
 print(f"Combination for B:\np:{p_1}\nq:{q_1}")
 
