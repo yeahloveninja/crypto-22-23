@@ -32,23 +32,23 @@ class Client:
         self.RSA = RSA(p, q)
 
     @staticmethod
-    def encryption(msg, e, n):
+    def encryption(msg: int, e: int, n: int) -> int:
         return pow(msg, e, n)
 
     @staticmethod
-    def decryption(encrypted_msg, d, n):
+    def decryption(encrypted_msg: int, d: int, n: int) -> int:
         return pow(encrypted_msg, d, n)
 
     @staticmethod
-    def signature(sign, d, n):
+    def signature(sign: int, d: int, n: int) -> int:
         return pow(sign, d, n)
 
     @staticmethod
-    def authentication(msg, sign, e, n):
+    def authentication(msg, sign, e, n) -> int:
         return msg == pow(sign, e, n)
 
     @staticmethod
-    def final_authentication(sign, e, n):
+    def final_authentication(sign: int, e: int, n: int) -> int:
         return pow(sign, e, n)
 
     def send_key(self, msg: int, e1: int, n1: int) -> (int, int):
@@ -112,8 +112,8 @@ def generate_key() -> (int, int, int, int):
             return keys[0], keys[1], keys[2], keys[3]
 
 
-p, q, p_1, q_1 = generate_key()
-first_cli = Client(p, q)
+p_0, q_0, p_1, q_1 = generate_key()
+first_cli = Client(p_0, q_0)
 second_cli = Client(p_1, q_1)
 message, message_sign = first_cli.send_key(14, second_cli.RSA.e, second_cli.RSA.n)
 result = second_cli.receive_key(message, message_sign, first_cli.RSA.e, first_cli.RSA.n)
