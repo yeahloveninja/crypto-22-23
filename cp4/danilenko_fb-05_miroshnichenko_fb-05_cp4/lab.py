@@ -112,8 +112,8 @@ def generate_key() -> (int, int, int, int):
             return keys[0], keys[1], keys[2], keys[3]
 
 
-p, q, p_1, q_1 = generate_key()
-first_cli = Client(p, q)
+p_0, q_0, p_1, q_1 = generate_key()
+first_cli = Client(p_0, q_0)
 second_cli = Client(p_1, q_1)
 message, message_sign = first_cli.send_key(14, second_cli.RSA.e, second_cli.RSA.n)
 result = second_cli.receive_key(message, message_sign, first_cli.RSA.e, first_cli.RSA.n)
