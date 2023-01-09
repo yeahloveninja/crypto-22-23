@@ -117,4 +117,30 @@ first_cli = Client(p, q)
 second_cli = Client(p_1, q_1)
 message, message_sign = first_cli.send_key(14, second_cli.RSA.e, second_cli.RSA.n)
 result = second_cli.receive_key(message, message_sign, first_cli.RSA.e, first_cli.RSA.n)
+print(f"Combination for A:\np:{p}\nq:{q}")
+
+print(f"Combination for B:\np:{p_1}\nq:{q_1}")
+
+print("------Keys for A:------")
+print(f"d:{first_cli.RSA.d}\nn:{first_cli.RSA.n}\ne:{first_cli.RSA.e}")
+
+print("------Keys for B:------")
+print(f"d:{second_cli.RSA.d}\nn:{second_cli.RSA.n}\ne:{second_cli.RSA.e}")
 print(f'Message - {result}')
+
+server_n = 'A06EC901529E1BB7FA176A6D1954345BCE0185880956652EAD17A758B85316C1'
+server_e = '10001'
+test_message_hex = '81B'
+sign = '5E39E7BDD920C73D0F953B0DEDD7F52C660A29A97FC11BF6C447390CB4ED974F'
+encrypted_msg = '63F45557833DD49F83DD9573C9F07D9438DBE7CD1471C14D924A9F2C50A77BE8'
+
+server_n_int = int(server_n, base=16)
+server_e_int = int(server_e, base=16)
+test_message = int(test_message_hex, base=16)
+sign_int = int(sign, base=16)
+encrypted_int = int(encrypted_msg, base=16)
+
+print("Encryption:", Client.encryption(test_message, server_e_int, server_n_int)) #45210671701325481290643043386336312396560172791927300126915100669227072715752
+#print("Decryption:")
+print(Client.authentication(test_message, sign_int, server_e_int, server_n_int)) #True
+
