@@ -32,23 +32,23 @@ class Client:
         self.RSA = RSA(p, q)
 
     @staticmethod
-    def encryption(msg, e, n):
+    def encryption(msg: int, e: int, n: int) -> int:
         return pow(msg, e, n)
 
     @staticmethod
-    def decryption(encrypted_msg, d, n):
+    def decryption(encrypted_msg: int, d: int, n: int) -> int:
         return pow(encrypted_msg, d, n)
 
     @staticmethod
-    def signature(sign, d, n):
+    def signature(sign: int, d: int, n: int) -> int:
         return pow(sign, d, n)
 
     @staticmethod
-    def authentication(msg, sign, e, n):
+    def authentication(msg, sign, e, n) -> int:
         return msg == pow(sign, e, n)
 
     @staticmethod
-    def final_authentication(sign, e, n):
+    def final_authentication(sign: int, e: int, n: int) -> int:
         return pow(sign, e, n)
 
     def send_key(self, msg: int, e1: int, n1: int) -> (int, int):
