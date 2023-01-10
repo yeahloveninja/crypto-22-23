@@ -4,7 +4,7 @@ from shutil import rmtree
 from re import sub
 import os
 NewDir = 'Result'
-ParentDir = 'D:/ВСЁ МОЁ/KPI/SEM5/Крипта/Labs/crypto-22-23/cp1/Kasab_fb-06_Kosygin_fb-06'
+ParentDir = 'D:\ВСЁ МОЁ\KPI\SEM5\Крипта\Labs\crypto-22-23\cp1\lab_1_Kasab_fb-06_Kosygin_fb-06'
 os.chdir(ParentDir)
 path = os.path.join(ParentDir, NewDir)
 if os.path.exists(NewDir) is True:
