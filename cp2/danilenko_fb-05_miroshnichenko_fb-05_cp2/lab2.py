@@ -11,10 +11,10 @@ def vigenere(target_text: str, code: str, type_operation: bool) -> str:
     result_text = ''
     if type_operation:
         for symbol, symbol_key in zip(target_text, cycle(code)):
-            result_text += alpha[(alpha.index(symbol) + alpha.index(symbol_key) % 32) % 32]
+            result_text += alpha[(alpha.index(symbol) + alpha.index(symbol_key)) % 32]
     else:
         for symbol, symbol_key in zip(target_text, cycle(code)):
-            result_text += alpha[(alpha.index(symbol) - alpha.index(symbol_key) % 32) % 32]
+            result_text += alpha[(alpha.index(symbol) - alpha.index(symbol_key)) % 32]
     return result_text
 
 

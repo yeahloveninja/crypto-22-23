@@ -1,6 +1,5 @@
 # -*- coding: cp1251 -*-
 #в мене були проблеми з кодуванням в VS і допомогло те що вище, якщо у вас таких проблем нема краще прирбрати його
-
 import re 
 import math
 #import pandas as pd
@@ -31,32 +30,36 @@ def monofrequency(text):
     freq = dict(sorted(freq.items())) # just sorting. we can use it or simply remove
     return freq
 
-def bifrequency(text, cross):
+def bifrequency_cross(text):
     freq = {} # same case as with monofrequency
-    if cross == 'y': # y - calculating cross bigramms, n - calculating simple bigramms
-        for i in range(0, len(text)-1): 
-            if text[i:i+2] not in freq:
-                freq[text[i:i+2]] = 1 #taking two letters
-            else:
-                freq[text[i:i+2]] += 1
-        total1 = sum(freq.values())
+    for i in range(0, len(text)-1): 
+        if text[i:i+2] not in freq:
+            freq[text[i:i+2]] = 1 #taking two letters
+        else:
+            freq[text[i:i+2]] += 1
+        #total1 = sum(freq.values())
         #print(total1)
-        #print(len(text)-1) - such check was done before the final code, and both outputs were the same, that's why i left case with len(...). 
-        #Anyway now i've replaced it with more correct option  
-        for x in freq:
-            freq[x] = round(freq[x]/total1,8) #i use round because numbers are too big
-    elif cross == 'n':  # same case as above 
-        for i in range(0, len(text)-1, 2): # step 2 
-            if text[i:i+2] not in freq:
-                freq[text[i:i+2]] = 1
-            else:
-                freq[text[i:i+2]] += 1
-        total2 = sum(freq.values())
-        #print(total2)
-        #print((len(text)-1)/2)
-        for x in freq:
-            freq[x] = round(freq[x]/total2,8)
+        # =
+        #print(len(text)-1) - such check was done before the final code, and both outputs were the same, that's why i left case with len(...).   
+    for x in freq:
+        freq[x] = round(freq[x]/(len(text)-1),8) #i use round because numbers are too big
     freq = dict(sorted(freq.items())) # sorting, better remove in order the output of bigramms was more understandable
+    return freq
+
+def bifrequency_nocross(text):
+    freq = {}
+    for i in range(0, len(text)-1, 2): # step 2 
+        if text[i:i+2] not in freq:
+            freq[text[i:i+2]] = 1
+        else:
+            freq[text[i:i+2]] += 1
+        #total2 = sum(freq.values())
+        #print(total2)
+        # =
+        #print((len(text)-1)/2)
+    for x in freq:
+        freq[x] = round(freq[x]/((len(text)-1)/2),8)
+    freq = dict(sorted(freq.items())) 
     return freq
 
 def print_entropy(freq, n): # calculating entropy like in example
@@ -93,19 +96,26 @@ print("-----H1:\n", x2)
 x3 = print_R(x2, 34)
 print("-----R:\n", x3)
 #for cross bi
-x4 = bifrequency(spacetext, 'y')
+x4 = bifrequency_cross(spacetext)
 #print("----Frequency of cross bigramms:\n", x4) 
 x5 = print_entropy(x4,2)
-print("-----H2:\n", x5)
+print("-----H2(cross):\n", x5)
 x6 = print_R(x5, 34)
-print("-----R:\n", x6)
+print("-----R(cross):\n", x6)
 # for simple bi
-x7 = bifrequency(spacetext, 'n')
+x7 = bifrequency_nocross(spacetext)
 #print("----Frequency of simple bigramms:\n", x7) 
 x8 = print_entropy(x7,2)
 print("-----H2:\n", x8)
 x9 = print_R(x8, 34)
 print("-----R:\n", x9)
+
+#a1 = pd.DataFrame(x1.values(),index=x1.keys())
+#a1.to_excel("mono_space.xlsx")
+#a2 = pd.DataFrame(x4.values(),index=x4.keys())
+#a2.to_excel("crossbi_space.xlsx")
+#a3 = pd.DataFrame(x7.values(),index=x7.keys())
+#a3.to_excel("bi_space.xlsx")
 
 #without spaces 
 print("\n*********** Here is the full analysis of text without spaces ***********")
@@ -117,28 +127,20 @@ print("-----H1:\n", y2)
 y3 = print_R(y2, 33)
 print("-----R:\n", y3)
 #for cross bi
-y4 = bifrequency(nospacetext, 'y')
+y4 = bifrequency_cross(nospacetext)
 #print("----Frequency of cross bigramms:\n", y4) 
 y5 = print_entropy(y4,2)
-print("-----H2:\n", y5)
+print("-----H2(cross):\n", y5)
 y6 = print_R(y5, 33)
-print("-----R:\n", y6)
+print("-----R(cross):\n", y6)
 # for simple bi
-y7 = bifrequency(nospacetext, 'n')
+y7 = bifrequency_nocross(nospacetext)
 #print("----Frequency of simple bigramms:\n", y7) 
 y8 = print_entropy(y7,2)
 print("-----H2:\n", y8)
 y9 = print_R(y8, 33)
 print("-----R:\n", y9)
 
-#далі закоментований код який не дуже потрібний в цій роботі, він лише допомогав мені переносити дані в таблиці 
-
-#a1 = pd.DataFrame(x1.values(),index=x1.keys())
-#a1.to_excel("mono_space.xlsx")
-#a2 = pd.DataFrame(x4.values(),index=x4.keys())
-#a2.to_excel("crossbi_space.xlsx")
-#a3 = pd.DataFrame(x7.values(),index=x7.keys())
-#a3.to_excel("bi_space.xlsx")
 
 #b1 = pd.DataFrame(y1.values(),index=y1.keys())
 #b1.to_excel("mono_nospace.xlsx")
