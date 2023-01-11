@@ -24,7 +24,7 @@ def eratosthenes(n: int):
 def compare_prime_checkers(pid: int):
     rounds = 1
     while(True):
-        for _ in range(10**6):
+        for _ in range(10**4):
             r = randint(rand_prime_min, rand_prime_max)
             t1 = is_prime_fermat(r)
             t2 = is_prime_rabin(r)
@@ -35,7 +35,7 @@ def compare_prime_checkers(pid: int):
 
 
 if __name__ == "__main__":
-    pss: list = [mp.Process(target=compare_prime_checkers, args=(i,)) for i in range(16)]
+    pss: list = [mp.Process(target=compare_prime_checkers, args=(i,)) for i in range(4)]
     for p in pss:
         p.start()
     for p in pss:

@@ -1,5 +1,6 @@
 from random import randint, randrange
-prime_check_iters = 64
+from math import gcd
+prime_check_iters = 40
 
 
 def primes_eratosthenes(n: int):
@@ -10,7 +11,7 @@ def primes_eratosthenes(n: int):
                 numbers[j] = 0
     numbers[0] = 2
     return [a for a in numbers if a != 0]
-known_primes_max: int = 2**8
+known_primes_max: int = 2**16
 known_primes = primes_eratosthenes(known_primes_max)
 
 
@@ -101,3 +102,57 @@ def is_prime_rabin(n: int, k: int=prime_check_iters):
         else:
             return False
     return True
+
+
+def highest_power(n: int, base: int) -> int:
+    p: int = 0
+    while (n % base == 0):
+        p += 1
+        n /= base
+    return p
+
+def is_prime_mr(p: int, k: int = prime_check_iters) -> bool:
+    if (p%2 == 0):
+        if (p !=2):
+            #print("[is_prime_mr] p % 2 == 0")
+            return False
+    
+    p1: int = p-1
+    #print(f"[is_prime_mr] p = {p}, p-1 = {p1}")
+    for base in known_primes[0:4]:
+        s: int = highest_power(p1, base)
+        d: int = int(p1 / base**s)
+        #print(f"[is_prime_mr]  base = {base}: s = {s}, d = {d}    {p}-1 = {p1} = {d} * {base}^{s}")
+        for _ in range(k):
+            x: int = randint(2, p1)
+            if (gcd(x, p) > 1):
+                #print(f"gcd({x}, {p}) = {gcd(x, p)}")
+                return False
+
+            #print(f"[is_prime_mr]   random x = {x}")
+
+            
+            b: int = mod_pow(x, d, p)
+            #print(f"[is_prime_mr]    b = x^d % p = {x}^{d} % {p} = {b}")
+            if (b not in [-1, 1]):
+                for r in range(1, s):
+                    b = mod_pow(b, base, p)
+                    #print(f"[is_prime_mr]    r = {r}, b = {b}")
+                    if (b == -1):
+                        break
+                    elif (b == 1):
+                        return False
+    return True
+
+
+'''for i in range(5, known_primes_max):
+    test_res = is_prime_fermat(i)
+    if ((i not in known_primes) and (test_res == True)):
+        print(f"false positive prime: {i}")
+    if ((i in known_primes) and (test_res == False)):
+        print(f"not detected as prime: {i}")
+'''
+
+
+
+

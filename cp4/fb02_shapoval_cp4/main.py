@@ -52,7 +52,7 @@ def verify(Msg: int, Sgn: int, e: int, n: int) -> bool:
     return Msg == mod_pow(Sgn, e, n)
 
 
-# message is (k_encrypted, S_encrypted)
+# msg is (k_encrypted, S_encrypted)
 #  k_encrypted = k^(e_rcvr) mod n_rcvr      (encrypt secret k)
 #  S = k^(d_sndr) mod (n_sndr)              (sign secret k, 0<k<n_sndr)
 #  S_encrypted = S^(e_rcvr) mod n_rcvr      (encrypt S)
@@ -113,7 +113,7 @@ class User:
 
     def regen_n_less_than(self, others_n: int):
         while(True):
-            #   Reinitializing variables is cringe but let it be
+            #   Reinitializing p, q, n is cringe but let it be
             self.p, self.q = rand_prime(), rand_prime()
             self.n = self.p * self.q
             if (self.n < others_n):
@@ -171,8 +171,8 @@ if __name__ == "__main__":
 
     k_enc_by_client, S_by_client = send_secret_k(msg, client.d, client.n, server.e, server.n)
     print(f"Client sends secret k")
-    print(f"  k_encrypted: {hex(k_enc_by_client)}")
-    print(f"  S_encrypted: {hex(S_by_client)}")
+    print(f"  k_enc: {hex(k_enc_by_client)}")
+    print(f"  S_enc: {hex(S_by_client)}")
 
 
     print(f"Client receives secret k")
