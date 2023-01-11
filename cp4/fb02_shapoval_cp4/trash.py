@@ -15,23 +15,21 @@ def eratosthenes(n: int):
 
 
 
-#primes = eratosthenes(2**24)
-#print(primes[len(primes)-1])
-#print(len(primes))
+
+
+
 
 
 
 def compare_prime_checkers(pid: int):
-    rounds = 1
-    while(True):
-        for _ in range(10**4):
-            r = randint(rand_prime_min, rand_prime_max)
-            t1 = is_prime_fermat(r)
-            t2 = is_prime_rabin(r)
-            if (t1 != t2):
-                print(f"\n{t1}, {t2}: {r}")
-        print(f"{pid}.{rounds} ", end='')
-        rounds += 1
+    for _ in range(200):
+        r = randint(rand_prime_min, rand_prime_max)
+        t1 = is_prime_fermat(r)
+        t2 = is_prime_rabin(r)
+        t3 = is_prime_mr(r, 128)
+        if (t1 != t2 or t2 != t3 or t1 != t3):
+            print(f"pid {pid}    {t1}, {t2}, {t3}: {r}")
+    print(f"--==  pid {pid} finished  ==--")
 
 
 if __name__ == "__main__":
@@ -40,6 +38,7 @@ if __name__ == "__main__":
         p.start()
     for p in pss:
         p.join()
+
 
 
 

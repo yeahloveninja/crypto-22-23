@@ -1,6 +1,6 @@
 from random import randint, randrange
 from math import gcd
-prime_check_iters = 40
+prime_check_iters = 32
 
 
 def primes_eratosthenes(n: int):
@@ -11,8 +11,9 @@ def primes_eratosthenes(n: int):
                 numbers[j] = 0
     numbers[0] = 2
     return [a for a in numbers if a != 0]
-known_primes_max: int = 2**16
+known_primes_max: int = 2**20
 known_primes = primes_eratosthenes(known_primes_max)
+#print(f"primes found from 2 to {known_primes_max}: {len(known_primes)} pcs")
 
 
 # a^n mod m
@@ -114,45 +115,25 @@ def highest_power(n: int, base: int) -> int:
 def is_prime_mr(p: int, k: int = prime_check_iters) -> bool:
     if (p%2 == 0):
         if (p !=2):
-            #print("[is_prime_mr] p % 2 == 0")
             return False
     
     p1: int = p-1
-    #print(f"[is_prime_mr] p = {p}, p-1 = {p1}")
-    for base in known_primes[0:4]:
-        s: int = highest_power(p1, base)
-        d: int = int(p1 / base**s)
-        #print(f"[is_prime_mr]  base = {base}: s = {s}, d = {d}    {p}-1 = {p1} = {d} * {base}^{s}")
-        for _ in range(k):
-            x: int = randint(2, p1)
-            if (gcd(x, p) > 1):
-                #print(f"gcd({x}, {p}) = {gcd(x, p)}")
+    s: int = highest_power(p1, 2)
+    d: int = int(p1 / 2**s)
+    for _ in range(k):
+        x: int = randint(2, p1)
+        if (gcd(x, p) > 1):
+            return False
+
+        b: int = mod_pow(x, d, p)
+        if (b in [p1, 1]):
+            continue
+        for r in range(1, s):
+            b = mod_pow(b, 2, p)
+            if (b == 1):
                 return False
-
-            #print(f"[is_prime_mr]   random x = {x}")
-
-            
-            b: int = mod_pow(x, d, p)
-            #print(f"[is_prime_mr]    b = x^d % p = {x}^{d} % {p} = {b}")
-            if (b not in [-1, 1]):
-                for r in range(1, s):
-                    b = mod_pow(b, base, p)
-                    #print(f"[is_prime_mr]    r = {r}, b = {b}")
-                    if (b == -1):
-                        break
-                    elif (b == 1):
-                        return False
+            elif (b == p1):
+                break
     return True
-
-
-'''for i in range(5, known_primes_max):
-    test_res = is_prime_fermat(i)
-    if ((i not in known_primes) and (test_res == True)):
-        print(f"false positive prime: {i}")
-    if ((i in known_primes) and (test_res == False)):
-        print(f"not detected as prime: {i}")
-'''
-
-
 
 
