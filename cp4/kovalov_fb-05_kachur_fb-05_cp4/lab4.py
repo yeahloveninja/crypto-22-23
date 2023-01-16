@@ -153,17 +153,19 @@ def CreatingKeys(a, b):
 
 
 def SendKey(a, b, k):
-    k1 = fastpow(k, b[0], b[1])
-    n = a[1]
-    S = fastpow(k, a[2], n)
-    S1 = fastpow(S, b[0], b[1])
+    #print(a)
+    #print(b)
+    k1 = Encrypt(b, k)
+    #n = a[1]
+    S = Sign(a, k)
+    S1 = Encrypt(b, S)
     return k1, S1
 
 
 def got_key(a, b, sendkey):
-    k = fastpow(sendkey[0], b[2], b[1])
-    s = fastpow(sendkey[1], b[2], b[1])
-    login = fastpow(s, a[0], a[1])
+    k = Decrypt(b, sendkey[0])
+    s = Decrypt(b, sendkey[1])
+    login = Verify(a, k, s)
     if login == k:
         return print("Пипипупу")
     else:
@@ -186,8 +188,9 @@ def check_signature(a, encrypt_M, sign_M):
 
 def final():
     partners = livetogether()
-    # print(partners)
+    print(partners)
     partner1 = CreatingKeys(partners[0][0], partners[0][1])
+    #print(partner1[0])
     partner2 = CreatingKeys(partners[1][0], partners[1][1])
     print(f'пара ключей 1:')
     key_partner1 = ['e', 'n', 'd']
