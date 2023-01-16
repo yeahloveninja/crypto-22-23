@@ -1,11 +1,17 @@
 ---H1 entropy---
-H1:                                4.401484367688899
-H1 without spaces:                 4.460162425027035
-H1 with redundancy:                0.13483704843981703
-H1 without spaces with redundancy: 0.12330319371318177
+H1:                                              4.401484367688899
+H1 without spaces:                               4.460162425027035
+H1 with redundancy:                              0.1274503412019915
+H1 without spaces with redundancy:               0.11581801114416501
 
----H2 entropy---
-H2 bigrams:                                4.003559323053849
-H2 bigrams without spaces:                 4.133327222431862
-H2 bigrams with redundancy:                0.2130538447196012
-H2 bigrams without spaces with redundancy: 0.1806097769859547
+---H2 block entropy---
+H2 block bigrams:                                4.003559323053849
+H2 block bigrams without spaces:                 4.133327222431862
+H2 block bigrams with redundancy:                0.20633494760258309
+H2 block bigrams without spaces with redundancy: 0.17333455551362764
+
+---H2 cross entropy---
+H2 cross bigrams:                                4.0045129023504415
+H2 cross bigrams without spaces:                 4.133213304561436
+H2 cross bigrams with redundancy:                0.2061459101733042
+H2 cross bigrams without spaces with redundancy: 0.17335733908771278
