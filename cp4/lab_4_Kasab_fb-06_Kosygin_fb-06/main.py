@@ -39,16 +39,16 @@ def SimpleTest(p): # тест на простоту
         if p % prime == 0:
             return False
         else:
-            while d % 2 == 0: # если d делиться на 2 то делим на 2 и добавляем к степени +1
+            while d % 2 == 0:
                 s = s + 1
                 d = d // 2
-            for _ in range(round(log2(p))): # вибираємо _ з діапазону log2(p)
-                x = randint(1, p) # вибираємо рандомне число з діапазону (1,p)
-                if FindNSD(x, p) == 1: # (2.1) якщо найбільший спільний дільник == 1 то переходимо до наступних кроків
-                    if (FastPower(x, d, p)) in [1, -1]:  # якщо (x^d)mod p == 1 або -1 то переходимо до настоупного кроку
+            for _ in range(round(log2(p))):
+                x = randint(1, p)
+                if FindNSD(x, p) == 1:
+                    if (FastPower(x, d, p)) in [1, -1]:
                         return True
                     else:
-                        for r in range(1, s - 1): # (2.2) вибираємо r з діапазону 1,s-1
+                        for r in range(1, s - 1):
                             if FastPower(x, d * (2 ** r), p) == -1:
                                 return True
                             elif FastPower(x, d * (2 ** r), p) == 1:
