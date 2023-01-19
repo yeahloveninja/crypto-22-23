@@ -139,8 +139,8 @@ server_e_int = int(server_e, base=16)
 test_message = int(test_message_hex, base=16)
 sign_int = int(sign, base=16)
 encrypted_int = int(encrypted_msg, base=16)
-
-print("Encryption:", Client.encryption(test_message, server_e_int, server_n_int)) #45210671701325481290643043386336312396560172791927300126915100669227072715752
-#print("Decryption:")
-print(Client.authentication(test_message, sign_int, server_e_int, server_n_int)) #True
+encrypt = Client.encryption(test_message, server_e_int, server_n_int)
+print("Encryption:", hex(encrypt).split('0x')[1])
+print("Decryption:", Client.decryption(encrypt, server_e_int, server_n_int))
+print(Client.authentication(test_message, sign_int, server_e_int, server_n_int))
 
