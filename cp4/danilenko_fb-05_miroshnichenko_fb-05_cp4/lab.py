@@ -62,7 +62,7 @@ class Client:
         msg = self.decryption(encrypt_msg, self.RSA.d, self.RSA.n)
         sign = self.decryption(encrypt_sign, self.RSA.d, self.RSA.n)
 
-        if self.final_authentication(sign, e, n):
+        if self.authentication(msg, sign, e, n):
             print('Key matched!')
             return msg
         else:
@@ -116,7 +116,7 @@ p_0, q_0, p_1, q_1 = generate_key()
 first_cli = Client(p_0, q_0)
 second_cli = Client(p_1, q_1)
 message, message_sign = first_cli.send_key(14, second_cli.RSA.e, second_cli.RSA.n)
-result = second_cli.receive_key(message, message_sign, first_cli.RSA.e, first_cli.RSA.n)
+result = second_cli.receive_key(message + 1, message_sign, first_cli.RSA.e, first_cli.RSA.n)
 print(f"Combination for A:\np:{p_0}\nq:{q_0}")
 
 print(f"Combination for B:\np:{p_1}\nq:{q_1}")
@@ -140,7 +140,6 @@ test_message = int(test_message_hex, base=16)
 sign_int = int(sign, base=16)
 encrypted_int = int(encrypted_msg, base=16)
 
-print("Encryption:", Client.encryption(test_message, server_e_int, server_n_int)) #45210671701325481290643043386336312396560172791927300126915100669227072715752
-#print("Decryption:")
-print(Client.authentication(test_message, sign_int, server_e_int, server_n_int)) #True
+print("Encryption:", Client.encryption(test_message, server_e_int, server_n_int))
+print(Client.authentication(test_message, sign_int, server_e_int, server_n_int))
 
