@@ -34,12 +34,30 @@ def ExtendedEuclid(a, b):
         x0, x1 = x1, x0 - q * x1
     return b, x0, y0
 
+def find_keys(text):
+    top_bigrams = bigrams(text)
+    keys_list = []
+    pairs_of_bigrams = possible_pairs(popularBigrams, top_bigrams)
+    for bigram in pairs_of_bigrams:
+        x1, y1 = get_index(bigram[0][0]), get_index(bigram[0][1])
+        x2, y2 = get_index(bigram[1][0]), get_index(bigram[1][1])
+        res = Equation(x1 - x2, y1 - y2,  len(alphabet)**2)
+        keys = []
+        if res is not None:
+            for a in res:
+                b = (y1 - a * x1) % len(alphabet)**2
+                keys.append((int(a), int(b)))
+        keys_list.extend(keys)
+    keys_list = list(set(keys_list))
+    return keys_list
+
+
 def Equation(a, b, mod = len(alphabet)):
     gcd, a0, y = ExtendedEuclid(a, mod)
     if gcd == 1 and ((a * a0) % mod) == 1:
         return [int((a0 * b) % mod)]
     elif b % gcd == 0:
-        _, a1, _ = ExtendedEuclid(a/gcd, mod/gcd)
+        div, a1, div = ExtendedEuclid(a/gcd, mod/gcd)
         x1 = (a1 * b / gcd) % (mod / gcd)
         result = []
         for i in range(gcd):
@@ -48,23 +66,6 @@ def Equation(a, b, mod = len(alphabet)):
     else:
         return None
 
-
-def find_keys(text):
-    keys_list = []
-    top_bigrams = bigrams(text)
-    pairs_of_bigrams = possible_pairs(popularBigrams, top_bigrams)
-    for bigram in pairs_of_bigrams:
-        keys = []
-        x1, y1 = get_index(bigram[0][0]), get_index(bigram[0][1])
-        x2, y2 = get_index(bigram[1][0]), get_index(bigram[1][1])
-        res = Equation(x1 - x2, y1 - y2,  len(alphabet)**2)
-        if res is not None:
-            for a in res:
-                b = (y1 - a * x1) % len(alphabet)**2
-                keys.append((int(a), int(b)))
-        keys_list.extend(keys)
-    keys_list = list(set(keys_list))
-    return keys_list
 
 def get_index(bigram):
     index = alphabet.index(bigram[0])*len(alphabet) + alphabet.index(bigram[1])
