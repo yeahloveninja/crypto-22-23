@@ -102,7 +102,7 @@ def ReceiveKey(e, n, k1, s1, d1, n1):
     k = FastPower(k1, d1, n1)
     s = FastPower(s1, d1, n1)
     if CheckSign(k, s, e, n) == "Verify":
-        return "Auth"
+        return ["Auth", k]
     else:
         return "Not auth"
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
