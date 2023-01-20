@@ -166,8 +166,8 @@ def got_key(a, b, sendkey):
     k = Decrypt(b, sendkey[0])
     s = Decrypt(b, sendkey[1])
     login = Verify(a, k, s)
-    if login == k:
-        return print("Пипипупу")
+    if login == 1:
+        return print("Пипипупу1")
     else:
         return print("Не вышло")
 
@@ -181,7 +181,7 @@ def create_signature(a, mes):
 def check_signature(a, encrypt_M, sign_M):
     ver = Verify(a, encrypt_M, sign_M)
     if ver == True:
-        print("Пипипупу")
+        print("Пипипупу2")
     else:
         print("Не вышло")
 
@@ -190,7 +190,7 @@ def final():
     partners = livetogether()
     print(partners)
     partner1 = CreatingKeys(partners[0][0], partners[0][1])
-    #print(partner1[0])
+    #print(partner1)
     partner2 = CreatingKeys(partners[1][0], partners[1][1])
     print(f'пара ключей 1:')
     key_partner1 = ['e', 'n', 'd']
@@ -209,7 +209,24 @@ def final():
     caption = create_signature(partner1, report)
     check_signature(partner1, caption[0], caption[1])
     k = randint(0, partner1[1])
+    b = 15
+    test_send = [23, 15, 18]
     send = SendKey(partner1, partner2, k)
     got_key(partner1, partner2, send)
 
 final()
+# exp = '10001'
+mod = 'BDAFB62ED0B290497205D4768C4BE3F9ED6F0FE125A77B268F2871F7DB813E47'
+#mod = '42'
+n = int(mod, base=16)
+#85797583998544640711737405761966135740046954643331660431393077356296392490567 mod 16
+#print(n)
+e = int('10001', 16)
+b = e, n
+message = 66 #42 в 16
+print(Encrypt(b,66))  # 56923092262062670029369080183419769797982230129887409317214508866303825977460 answer
+sign = int('2DE786C271DB6F9E96CD9DECB722BD3C7BB9DC3B0712BB3E44D1C14A1E7E6AF5', 16)
+print(Verify(b, message, sign))
+# cyphertext = '7DD95417588D2D3272D294856681467C317FFF19BE570EAEF11563FBF86EA074'
+# decrypted = '42'
+# signature = '2DE786C271DB6F9E96CD9DECB722BD3C7BB9DC3B0712BB3E44D1C14A1E7E6AF5'
