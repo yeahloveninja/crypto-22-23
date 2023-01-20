@@ -165,7 +165,7 @@ def ReceiveKey(a, b, sendkey):
     k = Decrypt(b, sendkey[0])
     s = Decrypt(b, sendkey[1])
     if Verify(a, k, s):
-        return print("Аутентифікація вдала!")
+        return print("Аутентифікація вдала!"), k
     else:
          return print("Помилка аутентифікації!")
 
