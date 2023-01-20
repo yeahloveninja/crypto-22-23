@@ -1,0 +1,95 @@
+from itertools import cycle
+import re
+
+alphaRus = 'абвгдежзийклмнопрстуфхцчшщъыьэюя'
+#algorithm vigenre
+def vigenereAlgorithm(targetText: str, code: str, operationType: bool) -> str: # if operationType false then decode, if true then encode
+    finalText = ''
+    if operationType:
+        for symbol, symbolKey in zip(targetText, cycle(code)):
+            finalText += alphaRus[(alphaRus.find(symbol) + alphaRus.find(symbolKey)) % 32] #32 lenght of alpha
+    else:
+        for symbol, symbolKey in zip(targetText, cycle(code)):
+            finalText += alphaRus[(alphaRus.find(symbol) - alphaRus.find(symbolKey)) % 32]
+    return finalText
+
+#foor coincindenceIndex as mentioned
+def coincidenceIndex(targetText: str) -> float:
+    length = len(targetText)
+    index = 0
+    for element in range(len(alphaRus)):
+        letterCounter = targetText.count(alphaRus[element])
+        index += letterCounter * (letterCounter - 1)
+    index *= 1 / (length * (length - 1))
+    return index
+
+#created for spliting blocks
+def splitBlocks(targetText: str, length: int) -> list:
+    blockList = []
+    for element in range(length):
+        blockList.append(targetText[element::length])
+    return blockList
+
+#created for indexing blocks
+def indexesBlocks(targetText: str, length: int) -> int:
+    block = splitBlocks(targetText, length)
+    beginingIndex = 0
+
+    for element in range(len(block)):
+        beginingIndex = beginingIndex + coincidenceIndex(block[element])
+    beginingIndex = beginingIndex/len(block)
+
+    return beginingIndex
+
+#as paramentr take text, size, letter - using for finding our key in text
+def createKey(targetText: str, size: int, targetLetter: str) -> str:
+    blockOur = splitBlocks(targetText, size)
+    finalKey = ""
+    for element in range(len(blockOur)):
+        frequentCount = 0
+        frequent = ''
+        for blockElement in blockOur[element]:
+            if frequentCount < blockOur[element].count(blockElement):
+                frequentCount = blockOur[element].count(blockElement)
+                frequent = blockElement
+        finalKey += alphaRus[(alphaRus.index(frequent) - alphaRus.index(targetLetter)) % len(alphaRus)]
+    return finalKey
+
+#keys from 1,2,3,4,5 and 10-20
+keys = ['яд', 'аут', 'беда', 'вагон',  'далматинец', 'живодерство', 'заботливость', 'камнедробилка', 'надувательство', 'техобслуживание', 'патриархальность', 'самовоспламенение', 'недобросовестность', 'многозначительность', 'сверхъестественность']
+
+data = {}
+
+#read file master and margarit (without spaces, special symbols and all to lower case, was performed on Java)
+with open('textMaster.txt', 'r') as file1:
+    ourText = file1.read()
+#read given file of 4th variant
+with open('texe.txt', 'r', encoding='utf-8') as file1:
+    newText = file1.read()
+
+#encoding master text with our keys
+for key in keys:
+    encodeText = lab2_func.vigenereAlgorithm(ourText, key, True)
+    data[len(key)] = [key + ' : ' + ''.join(encodeText)]
+
+#coinci index start master text
+print("\nCoincidence index start = ", lab2_func.coincidenceIndex(ourText), "\n")
+
+#loop over keys array, and for every key ouput value with using methods
+for key in keys:
+    print("Key length = ", len(key), f'and key is: "{key}"')
+    finalText = lab2_func.vigenereAlgorithm(ourText, key, True)
+    print("Encoded text: ", finalText)
+    print("Decoded text: ", lab2_func.vigenereAlgorithm(finalText, key, False))
+    print("Coincidence index: ", lab2_func.coincidenceIndex(finalText), "\n")
+
+#loop over alphaRus with i itteration, for finding index of our fiven text 4 variant
+for i in range(1, len(lab2_func.alphaRus) + 1):
+    print(str(i), str(lab2_func.indexesBlocks(newText, i)))
+
+#so our closest index in alphaRus was 13(0.0540) and 26(0.0538), so chosen was 13 - looping over most using russian letters
+for letter in 'оае':
+    print(lab2_func.createKey(newText, 13, letter))
+
+#combining 3 our string and answer for algorithm is 'громыковедьма' and decode
+print(lab2_func.vigenereAlgorithm(newText, 'громыковедьма', False))
